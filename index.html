@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>MECANGO｜拓客CRM/POS/電商 正式報價單（v4）</title>
+<style>
+:root{
+  --deep:#0A1221; --gold:#C9A227; --gold-soft:#E9D18A;
+  --card:#0C152A; --ink:#e7ecf3; --muted:#9aa4b2; --line:rgba(233,209,138,.28);
+  --accent:#1f2b4a; --ink-2:#cfd6e3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+.header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#0C152A,#0A1221)}
+.brand{display:flex;gap:12px;align-items:center}
+.brand img{width:56px;height:56px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#0b1430}
+.brand .meta{display:grid;gap:4px}
+.brand .meta .corp{font-weight:800;font-size:18px;letter-spacing:.5px}
+.brand .meta .sub{font-size:12px;color:var(--ink-2)}
+.block{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);margin-top:12px}
+.h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.h .t{font-weight:800}
+.h .t em{font-style:normal;color:var(--gold-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.row{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center}
+.row label{color:var(--muted);font-size:14px}
+.row input,.row select,.row textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#071226;color:var(--ink);font-size:15px}
+textarea{min-height:72px;resize:vertical}
+.small{font-size:12px;color:var(--muted)}
+.badge{font-size:12px;color:#111;background:var(--gold-soft);padding:6px 10px;border-radius:999px}
+.badge2{font-size:12px;color:#111;background:var(--gold);padding:4px 8px;border-radius:6px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer;font-size:15px}
+.btn.primary{background:var(--gold);color:#111;border-color:var(--gold)}
+.kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:900px){.kv{grid-template-columns:1fr}}
+.kv .box{border:1px dashed var(--line);border-radius:12px;padding:10px}
+.kv .box .lab{font-size:12px;color:var(--muted)}
+.kv .box .val{font-weight:700;font-size:16px}
+
+.table{width:100%;border-collapse:separate;border-spacing:0}
+.table th,.table td{padding:10px;border-bottom:1px dashed var(--line);text-align:left}
+.table th{position:sticky;top:0;background:linear-gradient(0deg,#0c152a,#0e1830)}
+.table .num{text-align:right;white-space:nowrap}
+
+.summary{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.summary table{width:100%;border-collapse:collapse}
+.summary th,.summary td{padding:12px;border-bottom:1px solid var(--line)}
+.summary thead th{background:#0e1830}
+.summary tfoot td{font-weight:700}
+
+.flex{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.line{border-top:1px dashed var(--line);margin:10px 0}
+.rm{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#0a152a}
+.manualBox{display:none;gap:6px;align-items:center}
+.manualBox input{width:120px;text-align:right}
+
+.totalgrid{display:grid;grid-template-columns:1fr 220px;gap:12px;align-items:flex-start}
+.totalbox{border:1px solid var(--line);border-radius:12px;padding:12px;background:#0b1630}
+.totalbox .row2{display:flex;justify-content:space-between;margin:6px 0}
+.totalbox .row2 strong{font-size:18px}
+.termblock{border:1px dashed var(--line);border-radius:12px;padding:10px}
+
+.stickybar{position:sticky;bottom:8px;left:0;right:0;margin-top:12px;display:flex;gap:8px;justify-content:space-between;align-items:center;background:rgba(12,21,42,.9);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.stickybar .fig{font-weight:800;font-size:18px}
+
+@media print{
+  .stickybar,.btns{display:none}
+  .wrap{max-width:100%;padding:0}
+  .header,.block{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 公司抬頭 / 報價單資訊 -->
+  <div class="header">
+    <div class="brand">
+      <img id="logo_preview" src="" alt="Logo" />
+      <div class="meta">
+        <div class="corp" id="corp_name_view">（公司抬頭）</div>
+        <div class="sub" id="corp_sub_view">統編：——｜電話：——｜Email：——</div>
+      </div>
+    </div>
+    <div class="btns">
+      <button class="btn" onclick="window.print()">🖨️ 列印/存 PDF</button>
+      <button class="btn" onclick="exportJson()">⬇️ 匯出 JSON</button>
+      <button class="btn" onclick="loadSample()">🧪 載入示例資料</button>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="h"><div class="t">報價單資訊 <em>Quote Info</em></div><span class="badge">含稅 5% 顯示</span></div>
+    <div class="kv">
+      <div class="box"><div class="lab">報價單編號</div><div class="val" id="quote_no">-</div></div>
+      <div class="box"><div class="lab">報價日期</div><div class="val" id="quote_date_view">-</div></div>
+      <div class="box"><div class="lab">有效期限</div><div class="val" id="valid_until">-</div></div>
+    </div>
+    <div class="grid2" style="margin-top:10px">
+      <div class="row"><label>公司抬頭</label><input id="corp_name" placeholder="例：屹登科技股份有限公司"></div>
+      <div class="row"><label>統一編號</label><input id="corp_tax" placeholder="例：12345678" inputmode="numeric"></div>
+      <div class="row"><label>電話</label><input id="corp_tel" placeholder="例：02-1234-5678"></div>
+      <div class="row"><label>Email</label><input id="corp_email" placeholder="example@domain.com" inputmode="email"></div>
+      <div class="row"><label>公司地址</label><input id="corp_addr" placeholder="例：台北市⋯"></div>
+      <div class="row"><label>官網</label><input id="corp_site" placeholder="https://..." inputmode="url"></div>
+      <div class="row"><label>Logo URL</label><input id="corp_logo" placeholder="https://...logo.png" inputmode="url"></div>
+      <div class="row"><label>報價有效天數</label>
+        <select id="valid_days">
+          <option value="7">7 天</option><option value="14" selected>14 天</option>
+          <option value="30">30 天</option><option value="60">60 天</option>
+        </select>
+      </div>
+      <div class="row"><label>收款資訊</label><textarea id="corp_bank" placeholder="銀行：xxx 銀行 分行｜戶名：xxx｜帳號：xxx-xxx-xxx"></textarea></div>
+      <div class="row"><label>付款方式</label>
+        <select id="pay_method">
+          <option>匯款</option><option>現金</option><option>刷卡(5%)</option><option>無卡分期(5%)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 客戶資料 -->
+  <div class="block">
+    <div class="h"><div class="t">客戶資料 <em>Client</em></div><span class="badge2">填寫</span></div>
+    <div class="grid2">
+      <div class="row"><label>公司/個人</label><input id="cust_name" placeholder="例：屹登餐飲股份有限公司"></div>
+      <div class="row"><label>統編/身分證</label><input id="cust_tax" placeholder="例：12345678" inputmode="numeric"></div>
+      <div class="row"><label>聯絡人</label><input id="cust_contact" placeholder="例：王小明"></div>
+      <div class="row"><label>電話</label><input id="cust_phone" placeholder="例：02-xxxxxxx / 09xx-xxx-xxx" inputmode="tel"></div>
+      <div class="row"><label>Email</label><input id="cust_email" placeholder="example@domain.com" inputmode="email"></div>
+      <div class="row"><label>地址</label><input id="cust_addr" placeholder="例：高雄市◯◯區◯◯路◯號"></div>
+    </div>
+  </div>
+
+  <!-- 建置費 + SSL -->
+  <div class="block">
+    <div class="h"><div class="t">建置費與 SSL <em>Setup & SSL</em></div><span class="badge2">一次性＋年費</span></div>
+    <div class="flex">
+      <label class="flex"><input type="checkbox" id="setup_enable" style="width:22px;height:22px" checked> <span style="margin-left:8px">系統建置費</span></label>
+      <select id="setup_choice" style="min-width:260px">
+        <option value="CRM 建置費|15000">CRM 建置費（15,000 元）</option>
+        <option value="餐飲POS 建置費|18000">餐飲POS 建置費（18,000 元）</option>
+        <option value="美業POS 建置費|20000">美業POS 建置費（20,000 元）</option>
+        <option value="CRM 電商建置|25000">CRM 電商建置（25,000 元）</option>
+        <option value="影音開課建置費|35000">影音開課建置費（35,000 元）</option>
+      </select>
+      <div class="row" style="margin:0;grid-template-columns:200px 220px">
+        <label>SSL 組數（$2,000/年）</label>
+        <select id="ssl_qty"></select>
+      </div>
+    </div>
+    <div class="small">＊建置費為一次性，總金額單位「元」；SSL 至少 1 組，列在訂購內容最後一列（單位「元/年」）。</div>
+  </div>
+
+  <!-- 雲端資料庫 -->
+  <div class="block">
+    <div class="h"><div class="t">雲端資料庫 <em>Cloud Database</em></div><span class="badge2">可新增多筆</span></div>
+    <div id="cloud_rows"></div>
+    <div class="line"></div>
+    <button class="btn" onclick="addCloudRow()">＋ 新增一筆雲端資料庫</button>
+    <div class="small">＊套數：1–20；「CRM子網」需手動輸入月價（自動換算年價）。</div>
+  </div>
+
+  <!-- 訂購內容說明 -->
+  <div class="block summary">
+    <div class="h"><div class="t">訂購內容說明 <em>Order Summary</em></div></div>
+    <table id="pdf_like">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th class="num">單次</th>
+          <th class="num">單價(月)</th>
+          <th class="num">單價(年)</th>
+          <th class="num">套數</th>
+          <th class="num">總金額</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr><td colspan="5" class="num">小計（未稅）</td><td class="num" id="pdf_sum">0</td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- 合計 / 備註 -->
+  <div class="totalgrid">
+    <div class="block termblock">
+      <div class="h"><div class="t">備註與條款 <em>Terms</em></div></div>
+      <ul style="margin:0 0 6px 18px">
+        <li>價格均為未稅，合計顯示含稅 5%（小計×1.05）。</li>
+        <li>報價有效期限依上方「有效期限」欄位為準，逾期請重新詢價。</li>
+        <li>如使用刷卡/無卡分期，將另加 5% 手續費。</li>
+        <li>雲端方案之總金額單位為「元/年」，建置費為「元」。</li>
+        <li>本報價未含硬體安裝布線與到府服務；若需另計。</li>
+      </ul>
+      <div class="line"></div>
+      <div class="small">收款資訊：<br><span id="bank_view">—</span></div>
+    </div>
+
+    <div class="block totalbox">
+      <div class="row2"><div>小計（未稅）</div><div id="sum_ex">0</div></div>
+      <div class="row2"><div>稅額（5%）</div><div id="tax">0</div></div>
+      <div class="row2"><strong>合計（含稅）</strong><strong id="total_inc">0</strong></div>
+      <div class="small" style="margin-top:6px">付款方式：<span id="pay_view">匯款</span></div>
+    </div>
+  </div>
+
+  <!-- Sticky 合計（手機友善） -->
+  <div class="stickybar">
+    <div>合計（含稅）</div>
+    <div class="fig" id="sticky_total">0</div>
+    <div class="btns">
+      <button class="btn primary" onclick="window.print()">列印/存PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $ = (sel)=>document.querySelector(sel);
+const fmt = (n)=> Number.isFinite(+n) ? (+n).toLocaleString('zh-TW') : n;
+const num = (v)=> { const n = parseFloat(String(v).replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; };
+
+// Quote number & dates
+function genQuoteNo(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  const rand = Math.floor(Math.random()*9000)+1000;
+  return `Q${y}${m}${day}-${rand}`;
+}
+function refreshHeader(){
+  $("#quote_no").textContent = window._quoteNo || (window._quoteNo = genQuoteNo());
+  const d = new Date();
+  $("#quote_date_view").textContent = d.toISOString().slice(0,10);
+  const days = num($("#valid_days").value||14);
+  const v = new Date(d.getTime()+days*24*60*60*1000);
+  $("#valid_until").textContent = v.toISOString().slice(0,10);
+
+  // company header preview
+  $("#corp_name_view").textContent = $("#corp_name").value || "（公司抬頭）";
+  $("#corp_sub_view").textContent =
+    `統編：${$("#corp_tax").value||"—"}｜電話：${$("#corp_tel").value||"—"}｜Email：${$("#corp_email").value||"—"}`;
+  const logo = $("#corp_logo").value.trim();
+  $("#logo_preview").src = logo || "";
+  $("#bank_view").textContent = $("#corp_bank").value || "—";
+  $("#pay_view").textContent = $("#pay_method").value || "匯款";
+}
+
+// SSL qty (1..20)
+(function(){ const sel = document.getElementById('ssl_qty'); for(let i=1;i<=20;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; if(i===1) o.selected=true; sel.appendChild(o);} })();
+
+// Cloud options (CRM子網為手動，置於總店系統下方)
+const CLOUD_OPTIONS = [
+  {name:"總店系統", yearly:60000},
+  {name:"CRM子網", manual:true},
+  {name:"CRM(單店)－微店版", monthly:3000},
+  {name:"CRM(單店)－專業版", monthly:4000},
+  {name:"CRM(單店)－裂變版", monthly:5000},
+  {name:"CRM+POS－小資版", monthly:3600},
+  {name:"CRM+POS－攤商版", monthly:4600},
+  {name:"CRM+POS－門店版", monthly:5600},
+  {name:"美業預約POS－創業版", monthly:3600},
+  {name:"美業預約POS－專家版", monthly:4600},
+  {name:"美業預約POS－企業版", monthly:5600},
+  {name:"影音開課(500G)", monthly:5500},
+  {name:"電商平台", yearly:18000},
+  {name:"派工POS", yearly:12000},
+];
+
+function cloudOptionsHTML(){
+  return CLOUD_OPTIONS.map((o)=>{
+    if(o.manual){
+      return `<option value="man||${o.name}">${o.name}（手動輸入／月）</option>`;
+    }
+    const label = o.monthly ? `${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）` : `${o.name}（${o.yearly.toLocaleString('zh-TW')} 元/年）`;
+    const value = o.monthly ? `m|${o.monthly}|${o.name}` : `y|${o.yearly}|${o.name}`;
+    return `<option value="${value}">${label}</option>`;
+  }).join('');
+}
+
+function qtySelectHTML(defaultVal=1){
+  const opts = [];
+  for(let i=1;i<=20;i++){
+    opts.push(`<option ${i===defaultVal?'selected':''}>${i}</option>`);
+  }
+  return `<select class="qtySel">${opts.join('')}</select>`;
+}
+
+function cloudRowHTML(){
+  return `<div class="flex cloudRow" style="gap:10px;align-items:center;margin-bottom:8px">
+    <select class="cloudSel" style="min-width:360px">${cloudOptionsHTML()}</select>
+    <span class="manualBox">單價(月)：<input class="manualPrice" type="number" inputmode="numeric" placeholder="請輸入"> 元</span>
+    <div>套數：${qtySelectHTML(1)}</div>
+    <button class="rm" title="移除">移除</button>
+  </div>`;
+}
+
+function addCloudRow(){
+  const container = document.getElementById("cloud_rows");
+  container.insertAdjacentHTML("beforeend", cloudRowHTML());
+  bindCloudEvents(container.lastElementChild);
+  calc();
+}
+
+function bindCloudEvents(row){
+  const sel = row.querySelector(".cloudSel");
+  const box = row.querySelector(".manualBox");
+  const price = row.querySelector(".manualPrice");
+  function toggleManual(){
+    if(sel.value.startsWith("man|")){
+      box.style.display = "inline-flex";
+      price.focus();
+    }else{
+      box.style.display = "none";
+      price.value = "";
+    }
+    calc();
+  }
+  sel.addEventListener("change", toggleManual);
+  row.querySelector(".qtySel").addEventListener("change", calc);
+  price.addEventListener("input", calc);
+  row.querySelector(".rm").addEventListener("click", ()=>{ row.remove(); calc(); });
+  toggleManual();
+}
+
+// Inputs change to refresh header and totals
+["corp_name","corp_tax","corp_tel","corp_email","corp_logo","corp_addr","corp_site","valid_days","corp_bank","pay_method"]
+.forEach(id=> document.addEventListener("input", (e)=>{ if(e.target.id===id) refreshHeader(); }));
+document.addEventListener("change", (e)=>{ if(e.target.id==="valid_days"||e.target.id==="pay_method") refreshHeader(); });
+
+function readSetup(){
+  const enabled = document.getElementById("setup_enable").checked;
+  const choice = document.getElementById("setup_choice").value; // "name|price"
+  const [name, price] = choice.split("|");
+  return enabled ? {name, price: num(price)} : null;
+}
+
+function readCloudRows(){
+  const rows = [...document.querySelectorAll(".cloudRow")];
+  return rows.map(r=>{
+    const sel = r.querySelector(".cloudSel").value; // "m|price|name" / "y|price|name" / "man||name"
+    const [type, price, name] = sel.split("|");
+    const qty = num(r.querySelector(".qtySel").value);
+    if(type==="man"){
+      const pm = num(r.querySelector(".manualPrice").value||0);
+      const yearly = pm*12;
+      return {name, monthly: pm, yearly, qty};
+    }else{
+      const monthly = (type==="m") ? num(price) : 0;
+      const yearly = (type==="y") ? num(price) : (num(price)*12);
+      return {name, monthly: (type==="m")?monthly:Math.round(yearly/12), yearly, qty};
+    }
+  });
+}
+
+function rebuildPdfTable(){
+  const tb = document.querySelector("#pdf_like tbody");
+  tb.innerHTML = "";
+  let subtotal = 0;
+
+  // Setup (once)
+  const setup = readSetup();
+  if(setup){
+    const sub = setup.price; subtotal += sub;
+    tb.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${setup.name}</td>
+        <td class="num">${fmt(setup.price)} 元</td>
+        <td class="num"></td>
+        <td class="num"></td>
+        <td class="num">1</td>
+        <td class="num">${fmt(sub)} 元</td>
+      </tr>
+    `);
+  }
+
+  // Cloud rows
+  const clouds = readCloudRows();
+  clouds.forEach(c=>{
+    const sub = c.yearly * c.qty; subtotal += sub;
+    tb.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${c.name}</td>
+        <td class="num"></td>
+        <td class="num">${fmt(c.monthly)}</td>
+        <td class="num">${fmt(c.yearly)}</td>
+        <td class="num">${c.qty}</td>
+        <td class="num">${fmt(sub)} 元/年</td>
+      </tr>
+    `);
+  });
+
+  // SSL last row
+  const sslQty = num(document.getElementById("ssl_qty").value)||1;
+  const sslYearly = 2000;
+  const sslSub = sslQty * sslYearly; subtotal += sslSub;
+  tb.insertAdjacentHTML("beforeend", `
+    <tr>
+      <td>SSL 年費</td>
+      <td class="num"></td>
+      <td class="num">${fmt(Math.round(sslYearly/12))}</td>
+      <td class="num">${fmt(sslYearly)}</td>
+      <td class="num">${sslQty}</td>
+      <td class="num">${fmt(sslSub)} 元/年</td>
+    </tr>
+  `);
+
+  // Totals
+  document.getElementById("pdf_sum").textContent = fmt(subtotal);
+  const tax = Math.round(subtotal * 0.05);
+  const total = subtotal + tax;
+  document.getElementById("sum_ex").textContent = fmt(subtotal);
+  document.getElementById("tax").textContent = fmt(tax);
+  document.getElementById("total_inc").textContent = fmt(total);
+  document.getElementById("sticky_total").textContent = fmt(total);
+}
+
+function calc(){ rebuildPdfTable(); }
+
+function exportJson(){
+  const rows = document.querySelectorAll("#pdf_like tbody tr");
+  const pdfRows = [];
+  rows.forEach(tr=>{
+    const tds = tr.querySelectorAll("td");
+    pdfRows.push({
+      item: tds[0].textContent.trim(),
+      once: tds[1].textContent.trim(),
+      price_m: tds[2].textContent.trim(),
+      price_y: tds[3].textContent.trim(),
+      sets: tds[4].textContent.trim(),
+      total: tds[5].textContent.trim(),
+    });
+  });
+  const payload = {
+    quote:{
+      number: document.getElementById("quote_no").textContent,
+      date: document.getElementById("quote_date_view").textContent,
+      valid_until: document.getElementById("valid_until").textContent,
+    },
+    company:{
+      name: $("#corp_name").value, tax: $("#corp_tax").value, tel: $("#corp_tel").value,
+      email: $("#corp_email").value, addr: $("#corp_addr").value, site: $("#corp_site").value,
+      logo: $("#corp_logo").value, bank: $("#corp_bank").value
+    },
+    client:{
+      name: $("#cust_name").value, tax: $("#cust_tax").value, contact: $("#cust_contact").value,
+      phone: $("#cust_phone").value, email: $("#cust_email").value, addr: $("#cust_addr").value
+    },
+    pay_method: $("#pay_method").value,
+    ssl_qty: Number($("#ssl_qty").value),
+    table: pdfRows,
+    subtotal_ex_tax: document.getElementById("sum_ex").textContent,
+    tax_5pct: document.getElementById("tax").textContent,
+    total_incl_tax: document.getElementById("total_inc").textContent,
+    generated_at: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `MECANGO_正式報價_v4_${(new Date()).toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// Sample data quick fill
+function loadSample(){
+  $("#corp_name").value="屹登科技股份有限公司";
+  $("#corp_tax").value="12345678";
+  $("#corp_tel").value="02-2345-6789";
+  $("#corp_email").value="sales@example.com";
+  $("#corp_addr").value="台北市信義區市府路1號";
+  $("#corp_site").value="https://example.com";
+  $("#corp_logo").value="";
+  $("#corp_bank").value="銀行：第一銀行 松山分行｜戶名：屹登科技｜帳號：123-456-789012";
+  $("#cust_name").value="小孩總店股份有限公司";
+  $("#cust_tax").value="24681357";
+  $("#cust_contact").value="林小姐";
+  $("#cust_phone").value="02-8888-0000";
+  $("#cust_email").value="owner@example.com";
+  $("#cust_addr").value="高雄市前鎮區中山二路";
+  refreshHeader();
+  calc();
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  // initial cloud row
+  addCloudRow();
+  // wire events
+  document.getElementById("setup_enable").addEventListener("change", calc);
+  document.getElementById("setup_choice").addEventListener("change", calc);
+  document.getElementById("ssl_qty").addEventListener("change", calc);
+  refreshHeader();
+  calc();
+});
+</script>
+</body>
+</html>
