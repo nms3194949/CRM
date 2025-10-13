@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>MECANGO｜拓客CRM/POS/電商 正式報價單（v5.5）</title>
+<title>MECANGO｜正式報價單（v5.7）</title>
 <style>
 :root{
   --deep:#0A1221; --gold:#C9A227; --gold-soft:#E9D18A;
   --card:#0C152A; --ink:#e7ecf3; --muted:#9aa4b2; --line:rgba(233,209,138,.28);
-  --accent:#1f2b4a; --ink-2:#cfd6e3;
+  --ink-2:#cfd6e3;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.5}
@@ -27,13 +27,14 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
 @media (max-width:900px){.grid2{grid-template-columns:1fr}}
 .row{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center}
 .row label{color:var(--muted);font-size:14px}
-.row input,.row select,.row textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#071226;color:var(--ink);font-size:15px}
+.row input,.row select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#071226;color:var(--ink);font-size:15px}
 .btns{display:flex;gap:8px;flex-wrap:wrap}
 .btn{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer;font-size:15px}
 .btn.primary{background:var(--gold);color:#111;border-color:var(--gold)}
 .flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .line{border-top:1px dashed var(--line);margin:10px 0}
 .rm{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#0a152a}
+.small{font-size:12px;color:var(--muted)}
 
 .summary{border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .summary table{width:100%;border-collapse:collapse}
@@ -47,17 +48,60 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
 .totalbox .row2{display:flex;justify-content:space-between;margin:6px 0}
 .totalbox .row2 strong{font-size:18px}
 .termblock{border:1px dashed var(--line);border-radius:12px;padding:10px}
-.legal{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#0a162f;white-space:pre-wrap;line-height:1.7}
 
 .stickybar{position:sticky;bottom:8px;left:0;right:0;margin-top:12px;display:flex;gap:8px;justify-content:space-between;align-items:center;background:rgba(12,21,42,.9);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
 .stickybar .fig{font-weight:800;font-size:18px}
 
-@media print{
-  .stickybar,.btns{display:none}
-  .wrap{max-width:100%;padding:0}
-  .header,.block{page-break-inside:avoid}
-  .legal{max-height:none;overflow:visible}
+/* NEW: four-block grid layout */
+.config-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:12px;
 }
+@media (max-width:900px){
+  .config-grid{ grid-template-columns:1fr }
+}
+
+/* PRINT STYLES */
+@media print{
+  @page{ size:A4; margin:10mm; }
+  body{ background:#fff; color:#000; }
+  .wrap{ max-width:none; padding:0 }
+  .btns,.stickybar{ display:none !important }
+  /* Default: hide configuration blocks */
+  .print-hide{ display:none !important }
+
+  /* Excel mode overrides when body has .excel-mode */
+  body.excel-mode .header{ display:none !important }
+  body.excel-mode .block{ border:0; background:#fff; }
+  body.excel-mode .print-hide{ display:none !important }
+  body.excel-mode .termblock, body.excel-mode .totalbox{ display:none !important }
+  body.excel-mode .summary{ border:0 }
+  body.excel-mode .summary thead th{ background:#fff; color:#000; }
+  body.excel-mode .summary table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:11px;
+  }
+  body.excel-mode .summary th, 
+  body.excel-mode .summary td{
+    border:1px solid #000;
+    padding:6px 6px;
+  }
+  body.excel-mode .summary tfoot td{
+    font-weight:700;
+    border-top:2px solid #000;
+  }
+  /* Excel-mode header rows shown as a small table */
+  body.excel-mode #excel_header{ display:block !important }
+}
+
+/* Hidden by default, shown only in excel-mode print */
+#excel_header{ display:none; margin-top:12px }
+#excel_header table{ width:100%; border-collapse:collapse; background:#fff; color:#000 }
+#excel_header th,#excel_header td{ border:1px solid #000; padding:6px 8px; font-size:11px; text-align:left }
+#excel_header .title{ font-weight:800 }
+
 </style>
 </head>
 <body>
@@ -73,7 +117,8 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
       </div>
     </div>
     <div class="btns">
-      <button class="btn" onclick="window.print()">🖨️ 列印/存 PDF</button>
+      <button class="btn" onclick="window.print()">🖨️ 一般列印</button>
+      <button class="btn" onclick="enableExcelMode()">📄 表格式列印</button>
       <button class="btn" onclick="exportJson()">⬇️ 匯出 JSON</button>
     </div>
   </div>
@@ -98,56 +143,59 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
     </div>
   </div>
 
-  <!-- 系統平台 -->
-  <div class="block">
-    <div class="h"><div class="t">系統平台 <em>Platform</em></div><span class="badge2">一次性＋年費</span></div>
-    <div class="flex">
-      <label class="flex"><input type="checkbox" id="setup_enable" style="width:22px;height:22px" checked> <span style="margin-left:8px">系統建置費</span></label>
-      <select id="setup_choice" style="min-width:260px">
-        <option value="CRM 建置費|15000">CRM 建置費（15,000 元）</option>
-        <option value="餐飲POS 建置費|18000">餐飲POS 建置費（18,000 元）</option>
-        <option value="美業POS 建置費|20000">美業POS 建置費（20,000 元）</option>
-        <option value="CRM 電商建置|25000">CRM 電商建置（25,000 元）</option>
-        <option value="影音開課建置費|35000">影音開課建置費（35,000 元）</option>
-      </select>
-
-      <span>空間/人數</span>
-      <select id="space_tier" style="min-width:260px">
-        <option value="0|50G/10,000人 $0/月">50G/10,000人 $0/月</option>
-        <option value="500|100G/2萬人 +$500/月">100G/2萬人 +$500/月</option>
-        <option value="1000|100G/5萬人 +$1,000/月">100G/5萬人 +$1,000/月</option>
-        <option value="1500|200G/10萬人 +$1,500/月">200G/10萬人 +$1,500/月</option>
-      </select>
+  <!-- 並排兩排：系統平台 / 雲端資料庫 / 加值服務 / 設備 -->
+  <div class="config-grid">
+    <!-- 系統平台 -->
+    <div class="block print-hide">
+      <div class="h"><div class="t">系統平台 <em>Platform</em></div><span class="badge2">一次性＋年費</span></div>
+      <div class="flex">
+        <label class="flex"><input type="checkbox" id="setup_enable" style="width:22px;height:22px" checked> <span style="margin-left:8px">系統建置費</span></label>
+        <select id="setup_choice" style="min-width:260px">
+          <option value="CRM 建置費|15000">CRM 建置費（15,000 元）</option>
+          <option value="餐飲POS 建置費|18000">餐飲POS 建置費（18,000 元）</option>
+          <option value="美業POS 建置費|20000">美業POS 建置費（20,000 元）</option>
+          <option value="CRM 電商建置|25000">CRM 電商建置（25,000 元）</option>
+          <option value="影音開課建置費|35000">影音開課建置費（35,000 元）</option>
+        </select>
+      </div>
+      <div class="flex" style="margin-top:6px">
+        <span>空間/人數</span>
+        <select id="space_tier" style="min-width:260px">
+          <option value="0|50G/10,000人 $0/月">50G/10,000人 $0/月</option>
+          <option value="500|100G/2萬人 +$500/月">100G/2萬人 +$500/月</option>
+          <option value="1000|100G/5萬人 +$1,000/月">100G/5萬人 +$1,000/月</option>
+          <option value="1500|200G/10萬人 +$1,500/月">200G/10萬人 +$1,500/月</option>
+        </select>
+      </div>
+      <div class="flex" style="margin-top:6px">
+        <span>SSL 組數（$2,000/年）</span>
+        <select id="ssl_qty" style="min-width:120px"></select>
+      </div>
     </div>
 
-    <div class="flex" style="margin-top:6px">
-      <span>SSL 組數（$2,000/年）</span>
-      <select id="ssl_qty" style="min-width:120px"></select>
+    <!-- 雲端資料庫 -->
+    <div class="block print-hide">
+      <div class="h"><div class="t">雲端資料庫 <em>Cloud Database</em></div><span class="badge2">可新增多筆</span></div>
+      <div id="cloud_rows"></div>
+      <div class="line"></div>
+      <button class="btn" onclick="addCloudRow()">＋ 新增一筆雲端資料庫</button>
     </div>
-  </div>
 
-  <!-- 雲端資料庫 -->
-  <div class="block">
-    <div class="h"><div class="t">雲端資料庫 <em>Cloud Database</em></div><span class="badge2">可新增多筆</span></div>
-    <div id="cloud_rows"></div>
-    <div class="line"></div>
-    <button class="btn" onclick="addCloudRow()">＋ 新增一筆雲端資料庫</button>
-  </div>
+    <!-- 加值服務 -->
+    <div class="block print-hide">
+      <div class="h"><div class="t">加值服務 <em>Add-ons</em></div><span class="badge2">可新增多筆</span></div>
+      <div id="addon_rows"></div>
+      <div class="line"></div>
+      <button class="btn" onclick="addAddonRow()">＋ 新增加值服務</button>
+    </div>
 
-  <!-- 加值服務 -->
-  <div class="block">
-    <div class="h"><div class="t">加值服務 <em>Add-ons</em></div><span class="badge2">可新增多筆</span></div>
-    <div id="addon_rows"></div>
-    <div class="line"></div>
-    <button class="btn" onclick="addAddonRow()">＋ 新增加值服務</button>
-  </div>
-
-  <!-- 設備 -->
-  <div class="block">
-    <div class="h"><div class="t">設備 <em>Hardware</em></div><span class="badge2">可新增多筆</span></div>
-    <div id="device_rows"></div>
-    <div class="line"></div>
-    <button class="btn" onclick="addDeviceRow()">＋ 新增設備</button>
+    <!-- 設備 -->
+    <div class="block print-hide">
+      <div class="h"><div class="t">設備 <em>Hardware</em></div><span class="badge2">可新增多筆</span></div>
+      <div id="device_rows"></div>
+      <div class="line"></div>
+      <button class="btn" onclick="addDeviceRow()">＋ 新增設備</button>
+    </div>
   </div>
 
   <!-- 訂購內容說明 -->
@@ -171,7 +219,19 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
     </table>
   </div>
 
-  <!-- 備註 / 合計 / 匯款資訊 / 注意事項 -->
+  <!-- Excel-mode 專用：簡要抬頭（印出時才顯示） -->
+  <div id="excel_header">
+    <table>
+      <tr><th class="title" colspan="4">正式報價單</th></tr>
+      <tr><th>報價日期</th><td id="x_date"></td><th>公司抬頭</th><td id="x_name"></td></tr>
+      <tr><th>聯絡人</th><td id="x_contact"></td><th>統一編號</th><td id="x_tax"></td></tr>
+      <tr><th>電話</th><td id="x_tel"></td><th>Email</th><td id="x_email"></td></tr>
+      <tr><th>公司地址</th><td colspan="3" id="x_addr"></td></tr>
+      <tr><th>官網</th><td colspan="3" id="x_site"></td></tr>
+    </table>
+  </div>
+
+  <!-- 備註 / 合計 / 匯款資訊 -->
   <div class="totalgrid">
     <div class="block termblock">
       <div class="h"><div class="t">備註與條款 <em>Terms</em></div></div>
@@ -180,16 +240,6 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
         <li>報價有效期限為30天，逾期請重新詢價。</li>
         <li>如使用刷卡/無卡分期，將另加手續費。</li>
       </ul>
-
-      <div class="legal" id="legal_text">※ 本申請單視同合約書。※本申請書一式二份，確認簽章後，買賣雙方各執一份。
-※ 本系統雲端服務為年約制，自開通日起算至少為期1年， 買賣雙方完成本合約簽訂之同時,買方則視同認知本採購之商品客製化服務,賣方無法將商品轉售
-   第三方,故買方簽約三天後不得要求退款。
-※ 系統交接時甲方須派遣講師向甲方以現場或是遠端等教學方式提供至少一場共計1小時之系統管理教育訓練。除線上諮詢售服不在此限之外，如後續乙方或乙
-   方客戶提出額外的教育順練需求，則另需支付甲方講師費$1,000/小時。如教學地點在外縣市，交通住宿費另計，請款採實報實銷,其餘相關開支乙方無須支付。
-※ 關於官方LINE本身的功能限制或功能變更等相關設定與操作技術問題非本公司服務的範圍內,僅限本公司提供之CRM/POS系統售服。
-※ 本契約以中華民國法律為準據法，如有未盡事宜，依相關法律規定，雙方應本誠信原則協商解決，因本契約所生之爭訟，雙方合意以台灣高雄地方法院為第一
-審管轄法院。</div>
-
       <div class="line"></div>
       <div>
         <div class="t" style="font-weight:700;margin:4px 0 6px 0">匯款資訊</div>
@@ -214,7 +264,8 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
     <div>合計（含稅）</div>
     <div class="fig" id="sticky_total">0</div>
     <div class="btns">
-      <button class="btn primary" onclick="window.print()">列印/存PDF</button>
+      <button class="btn primary" onclick="window.print()">🖨️ 一般列印</button>
+      <button class="btn" onclick="enableExcelMode()">📄 表格式列印</button>
     </div>
   </div>
 
@@ -225,26 +276,10 @@ const $ = (sel)=>document.querySelector(sel);
 const fmt = (n)=> Number.isFinite(+n) ? (+n).toLocaleString('zh-TW') : n;
 const num = (v)=> { const n = parseFloat(String(v).replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; };
 
-// Init quote date as today (user can change)
-function initQuoteDate(){
-  const d = new Date();
-  const ds = d.toISOString().slice(0,10);
-  const el = document.getElementById("quote_date_view");
-  if(!el.value) el.value = ds;
-}
+function initQuoteDate(){ const d=new Date(),ds=d.toISOString().slice(0,10); const el=$("#quote_date_view"); if(!el.value) el.value=ds; }
+(function initSSL(){ const sel=$("#ssl_qty"); if(!sel) return; sel.innerHTML=""; for(let i=1;i<=20;i++){const o=document.createElement('option'); o.value=i; o.textContent=i; if(i===1) o.selected=true; sel.appendChild(o);} })();
 
-// SSL select 1..20
-(function initSSL(){
-  const sel = document.getElementById('ssl_qty');
-  sel.innerHTML = "";
-  for(let i=1;i<=20;i++){
-    const o=document.createElement('option');
-    o.value=i; o.textContent=i; if(i===1) o.selected=true;
-    sel.appendChild(o);
-  }
-})();
-
-// Cloud options
+// Options
 const CLOUD_OPTIONS = [
   {name:"總店系統", yearly:60000},
   {name:"CRM子網", manual:true},
@@ -261,7 +296,6 @@ const CLOUD_OPTIONS = [
   {name:"電商平台", yearly:18000},
   {name:"派工POS", yearly:12000},
 ];
-
 const ADDON_OPTIONS = [
   {name:"訂位/預約系統", yearly:15000},
   {name:"多元支付", yearly:5000},
@@ -270,7 +304,6 @@ const ADDON_OPTIONS = [
   {name:"推薦集點", yearly:5000},
   {name:"選單修改", once:3000},
 ];
-
 const DEVICE_OPTIONS = [
   {name:"Wifi+USB出單機(80mm)", once:5500, unit:"台"},
   {name:"Wifi+USB出單機(58mm)+發票機", once:8500, unit:"台"},
@@ -283,10 +316,8 @@ const DEVICE_OPTIONS = [
 ];
 
 function cloudOptionsHTML(){
-  return CLOUD_OPTIONS.map((o)=>{
-    if(o.manual){
-      return `<option value="man||${o.name}">${o.name}（手動輸入／月）</option>`;
-    }
+  return CLOUD_OPTIONS.map(o=>{
+    if(o.manual) return `<option value="man||${o.name}">${o.name}（手動輸入／月）</option>`;
     const label = o.monthly ? `${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）` : `${o.name}（${o.yearly.toLocaleString('zh-TW')} 元/年）`;
     const value = o.monthly ? `m|${o.monthly}|${o.name}` : `y|${o.yearly}|${o.name}`;
     return `<option value="${value}">${label}</option>`;
@@ -294,8 +325,8 @@ function cloudOptionsHTML(){
 }
 function addonOptionsHTML(){
   return ADDON_OPTIONS.map(o=>{
-    if(o.once){ return `<option value="o|${o.once}|${o.name}">${o.name}（${o.once.toLocaleString('zh-TW')} 元/次）</option>`; }
-    if(o.monthly){ return `<option value="m|${o.monthly}|${o.name}">${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）</option>`; }
+    if(o.once) return `<option value="o|${o.once}|${o.name}">${o.name}（${o.once.toLocaleString('zh-TW')} 元/次）</option>`;
+    if(o.monthly) return `<option value="m|${o.monthly}|${o.name}">${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）</option>`;
     return `<option value="y|${o.yearly}|${o.name}">${o.name}（${o.yearly.toLocaleString('zh-TW')} 元/年）</option>`;
   }).join('');
 }
@@ -303,10 +334,8 @@ function deviceOptionsHTML(){
   return DEVICE_OPTIONS.map(o=>`<option value="o|${o.once}|${o.name}">${o.name}（${o.once.toLocaleString('zh-TW')} 元${o.unit?"/"+o.unit:""}）</option>`).join('');
 }
 
-function qtySelectHTML(cls="qtySel",max=20,defaultVal=1){
-  const opts = [];
-  for(let i=1;i<=max;i++){ opts.push(`<option ${i===defaultVal?'selected':''}>${i}</option>`); }
-  return `<select class="${cls}">${opts.join('')}</select>`;
+function qtySelectHTML(cls="qtySel",max=20,def=1){
+  const opts=[]; for(let i=1;i<=max;i++){opts.push(`<option ${i===def?'selected':''}>${i}</option>`)}; return `<select class="${cls}">${opts.join('')}</select>`;
 }
 
 function cloudRowHTML(){
@@ -333,36 +362,23 @@ function deviceRowHTML(){
 }
 
 function addCloudRow(){
-  const c=document.getElementById("cloud_rows");
-  c.insertAdjacentHTML("beforeend", cloudRowHTML());
-  const row = c.lastElementChild;
-  bindCloudEvents(row);
-  // default to 裂變版
-  const sel = row.querySelector(".cloudSel");
-  const targetVal = "m|5000|CRM(單店)－裂變版";
-  const opt = [...sel.options].find(o=>o.value===targetVal);
-  if(opt){ sel.value = targetVal; }
-  // trigger change to refresh manual box state
-  sel.dispatchEvent(new Event('change'));
-  calc();
+  const c=$("#cloud_rows"); c.insertAdjacentHTML("beforeend", cloudRowHTML());
+  const row=c.lastElementChild; bindCloudEvents(row);
+  const sel=row.querySelector(".cloudSel"); const target="m|5000|CRM(單店)－裂變版";
+  const opt=[...sel.options].find(o=>o.value===target); if(opt) sel.value=target;
+  sel.dispatchEvent(new Event('change')); calc();
 }
-function addAddonRow(){ const c=document.getElementById("addon_rows"); c.insertAdjacentHTML("beforeend", addonRowHTML()); bindAddonEvents(c.lastElementChild); calc(); }
-function addDeviceRow(){ const c=document.getElementById("device_rows"); c.insertAdjacentHTML("beforeend", deviceRowHTML()); bindDeviceEvents(c.lastElementChild); calc(); }
+function addAddonRow(){ const c=$("#addon_rows"); c.insertAdjacentHTML("beforeend", addonRowHTML()); bindAddonEvents(c.lastElementChild); calc(); }
+function addDeviceRow(){ const c=$("#device_rows"); c.insertAdjacentHTML("beforeend", deviceRowHTML()); bindDeviceEvents(c.lastElementChild); calc(); }
 
 function bindCloudEvents(row){
-  const sel = row.querySelector(".cloudSel");
-  const box = row.querySelector(".manualBox");
-  const price = row.querySelector(".manualPrice");
-  function toggleManual(){
-    if(sel.value.startsWith("man|")){ box.style.display="inline-flex"; price.focus(); }
-    else { box.style.display="none"; price.value=""; }
-    calc();
-  }
-  sel.addEventListener("change", toggleManual);
+  const sel=row.querySelector(".cloudSel"), box=row.querySelector(".manualBox"), price=row.querySelector(".manualPrice");
+  function toggle(){ if(sel.value.startsWith("man|")){box.style.display="inline-flex"; price.focus();} else {box.style.display="none"; price.value="";} calc(); }
+  sel.addEventListener("change", toggle);
   row.querySelector(".qtySel").addEventListener("change", calc);
   price.addEventListener("input", calc);
-  row.querySelector(".rm").addEventListener("click", ()=>{ row.remove(); calc(); });
-  toggleManual();
+  row.querySelector(".rm").addEventListener("click", ()=>{row.remove(); calc();});
+  toggle();
 }
 function bindAddonEvents(row){
   row.querySelector(".addonSel").addEventListener("change", calc);
@@ -376,245 +392,175 @@ function bindDeviceEvents(row){
 }
 
 function headerPreview(){
-  const name = $("#corp_name").value || "（公司抬頭）";
-  // sub (tax/address) is fixed text per request
-  $("#corp_name_view").textContent = name;
+  const name=$("#corp_name").value || "（公司抬頭）";
+  $("#corp_name_view").textContent=name;
+  // fill excel header fields
+  $("#x_date").textContent = $("#quote_date_view").value || "";
+  $("#x_name").textContent = $("#corp_name").value || "";
+  $("#x_contact").textContent = $("#contact_person").value || "";
+  $("#x_tax").textContent = $("#corp_tax").value || "";
+  $("#x_tel").textContent = $("#corp_tel").value || "";
+  $("#x_email").textContent = $("#corp_email").value || "";
+  $("#x_addr").textContent = $("#corp_addr").value || "";
+  $("#x_site").textContent = $("#corp_site").value || "";
 }
-
-["corp_name"].forEach(id=>{
-  document.addEventListener("input",(e)=>{ if(e.target.id===id) headerPreview(); });
+["corp_name","contact_person","corp_tax","corp_tel","corp_email","corp_addr","corp_site","quote_date_view"].forEach(id=>{
+  document.addEventListener("input",(e)=>{ if(e.target && e.target.id===id) headerPreview(); });
 });
 
 function readSetup(){
-  const enabled = document.getElementById("setup_enable").checked;
-  const choice = document.getElementById("setup_choice").value;
-  const [name, price] = choice.split("|");
-  return enabled ? {name, price: num(price)} : null;
+  const enabled=$("#setup_enable")?.checked;
+  if(!enabled) return null;
+  const [name,price]=($("#setup_choice").value||"").split("|");
+  return {name, price:num(price)};
 }
 function readSpaceTier(){
-  const v = document.getElementById("space_tier").value; // "monthly|label"
-  const [monthly, label] = v.split("|");
-  const m = num(monthly);
-  return {name:`雲端空間/人數方案（${label}）`, monthly:m, yearly:m*12, qty:1, kind:"space"};
+  const el=$("#space_tier"); if(!el) return null;
+  const [m,label]=el.value.split("|"); const monthly=num(m);
+  return {name:`雲端空間/人數方案（${label}）`, monthly, yearly:monthly*12, qty:1};
 }
 function readCloudRows(){
-  const rows = [...document.querySelectorAll(".cloudRow")];
-  return rows.map(r=>{
-    const sel = r.querySelector(".cloudSel").value;
-    const [type, price, name] = sel.split("|");
+  return [...document.querySelectorAll(".cloudRow")].map(r=>{
+    const [type, price, name] = r.querySelector(".cloudSel").value.split("|");
     const qty = num(r.querySelector(".qtySel").value);
     if(type==="man"){
       const pm = num(r.querySelector(".manualPrice").value||0);
-      const yearly = pm*12;
-      return {name, monthly: pm, yearly, qty, kind:"cloud"};
+      return {name, monthly:pm, yearly:pm*12, qty};
     }else{
-      const monthly = (type==="m") ? num(price) : 0;
-      const yearly = (type==="y") ? num(price) : (num(price)*12);
-      return {name, monthly: (type==="m")?monthly:Math.round(yearly/12), yearly, qty, kind:"cloud"};
+      const monthly=(type==="m")?num(price):Math.round(num(price)/12);
+      const yearly=(type==="y")?num(price):num(price)*12;
+      return {name, monthly, yearly, qty};
     }
   });
 }
 function readAddonRows(){
-  const rows = [...document.querySelectorAll(".addonRow")];
-  return rows.map(r=>{
-    const sel = r.querySelector(".addonSel").value;
-    const [type, price, name] = sel.split("|");
+  return [...document.querySelectorAll(".addonRow")].map(r=>{
+    const [type, price, name] = r.querySelector(".addonSel").value.split("|");
     const qty = num(r.querySelector(".qtySel").value);
-    if(type==="o"){
-      return {name, once: num(price), qty, kind:"addon"};
-    }else if(type==="m"){
-      const monthly = num(price), yearly = monthly*12;
-      return {name, monthly, yearly, qty, kind:"addon"};
-    }else{
-      const yearly = num(price), monthly = Math.round(yearly/12);
-      return {name, monthly, yearly, qty, kind:"addon"};
-    }
+    if(type==="o"){ return {name, once:num(price), qty}; }
+    if(type==="m"){ const m=num(price); return {name, monthly:m, yearly:m*12, qty}; }
+    const y=num(price); return {name, monthly:Math.round(y/12), yearly:y, qty};
   });
 }
 function readDeviceRows(){
-  const rows = [...document.querySelectorAll(".deviceRow")];
-  return rows.map(r=>{
-    const sel = r.querySelector(".deviceSel").value;
-    const [_, price, name] = sel.split("|");
+  return [...document.querySelectorAll(".deviceRow")].map(r=>{
+    const [_, price, name] = r.querySelector(".deviceSel").value.split("|");
     const qty = num(r.querySelector(".qtySel").value);
-    return {name, once: num(price), qty, kind:"device"};
+    return {name, once:num(price), qty};
   });
 }
 
 function rebuildPdfTable(){
-  const tb = document.querySelector("#pdf_like tbody");
-  tb.innerHTML = "";
-  let subtotal = 0;
+  const tb=$("#pdf_like tbody"); tb.innerHTML=""; let subtotal=0;
 
-  // Setup (once)
-  const setup = readSetup();
+  const setup=readSetup();
   if(setup){
-    const sub = setup.price; subtotal += sub;
-    tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${setup.name}</td>
-        <td class="num">${fmt(setup.price)} 元</td>
-        <td class="num"></td>
-        <td class="num"></td>
-        <td class="num">1</td>
-        <td class="num">${fmt(sub)} 元</td>
-      </tr>
-    `);
+    subtotal+=setup.price;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td>${setup.name}</td><td class="num">${fmt(setup.price)} 元</td><td class="num"></td>
+      <td class="num"></td><td class="num">1</td><td class="num">${fmt(setup.price)} 元</td></tr>`);
   }
 
-  // Cloud rows
-  const clouds = readCloudRows();
+  const clouds=readCloudRows();
   clouds.forEach(c=>{
-    const sub = c.yearly * c.qty; subtotal += sub;
-    tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${c.name}</td>
-        <td class="num"></td>
-        <td class="num">${fmt(c.monthly)}</td>
-        <td class="num">${fmt(c.yearly)}</td>
-        <td class="num">${c.qty}</td>
-        <td class="num">${fmt(sub)} 元/年</td>
-      </tr>
-    `);
+    const sub=c.yearly*c.qty; subtotal+=sub;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td>${c.name}</td><td class="num"></td><td class="num">${fmt(c.monthly)}</td>
+      <td class="num">${fmt(c.yearly)}</td><td class="num">${c.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
   });
 
-  // Space tier row (before SSL)
-  const sp = readSpaceTier();
-  const spSub = sp.yearly * sp.qty;
+  const sp=readSpaceTier();
   if(sp){
-    tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${sp.name}</td>
-        <td class="num"></td>
-        <td class="num">${fmt(sp.monthly)}</td>
-        <td class="num">${fmt(sp.yearly)}</td>
-        <td class="num">${sp.qty}</td>
-        <td class="num">${fmt(spSub)} 元/年</td>
-      </tr>
-    `);
-    subtotal += spSub;
+    const sub=sp.yearly*sp.qty; subtotal+=sub;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td>${sp.name}</td><td class="num"></td><td class="num">${fmt(sp.monthly)}</td>
+      <td class="num">${fmt(sp.yearly)}</td><td class="num">${sp.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
   }
 
-  // Add-on rows
-  const addons = readAddonRows();
+  const addons=readAddonRows();
   addons.forEach(a=>{
-    let sub = 0, monthly="", yearly="", once="";
     if(a.once!=null){
-      sub = a.once * a.qty; subtotal += sub; once = `${fmt(a.once)} 元`;
+      const sub=a.once*a.qty; subtotal+=sub;
+      tb.insertAdjacentHTML("beforeend", `<tr>
+        <td>${a.name}</td><td class="num">${fmt(a.once)} 元</td><td class="num"></td>
+        <td class="num"></td><td class="num">${a.qty}</td><td class="num">${fmt(sub)} 元</td></tr>`);
     }else{
-      sub = a.yearly * a.qty; subtotal += sub; monthly = fmt(a.monthly); yearly = fmt(a.yearly);
+      const sub=a.yearly*a.qty; subtotal+=sub;
+      tb.insertAdjacentHTML("beforeend", `<tr>
+        <td>${a.name}</td><td class="num"></td><td class="num">${fmt(a.monthly)}</td>
+        <td class="num">${fmt(a.yearly)}</td><td class="num">${a.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
     }
-    tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${a.name}</td>
-        <td class="num">${once}</td>
-        <td class="num">${monthly}</td>
-        <td class="num">${yearly}</td>
-        <td class="num">${a.qty}</td>
-        <td class="num">${fmt(sub)} ${a.once!=null?"元":"元/年"}</td>
-      </tr>
-    `);
   });
 
-  // Device rows (once)
-  const devices = readDeviceRows();
+  const devices=readDeviceRows();
   devices.forEach(d=>{
-    const sub = d.once * d.qty; subtotal += sub;
-    tb.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${d.name}</td>
-        <td class="num">${fmt(d.once)} 元</td>
-        <td class="num"></td>
-        <td class="num"></td>
-        <td class="num">${d.qty}</td>
-        <td class="num">${fmt(sub)} 元</td>
-      </tr>
-    `);
+    const sub=d.once*d.qty; subtotal+=sub;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td>${d.name}</td><td class="num">${fmt(d.once)} 元</td><td class="num"></td>
+      <td class="num"></td><td class="num">${d.qty}</td><td class="num">${fmt(sub)} 元</td></tr>`);
   });
 
   // SSL last row
-  const sslQty = num(document.getElementById("ssl_qty").value)||1;
-  const sslYearly = 2000;
-  const sslSub = sslQty * sslYearly; subtotal += sslSub;
-  tb.insertAdjacentHTML("beforeend", `
-    <tr>
-      <td>SSL 年費</td>
-      <td class="num"></td>
-      <td class="num">${fmt(Math.round(sslYearly/12))}</td>
-      <td class="num">${fmt(sslYearly)}</td>
-      <td class="num">${sslQty}</td>
-      <td class="num">${fmt(sslSub)} 元/年</td>
-    </tr>
-  `);
+  const sslSel=document.getElementById("ssl_qty");
+  if(sslSel){
+    const sslQty = num(sslSel.value)||1, sslYearly=2000, sslSub=sslQty*sslYearly; subtotal+=sslSub;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td>SSL 年費</td><td class="num"></td><td class="num">${fmt(Math.round(sslYearly/12))}</td>
+      <td class="num">${fmt(sslYearly)}</td><td class="num">${sslQty}</td><td class="num">${fmt(sslSub)} 元/年</td></tr>`);
+  }
 
   // Totals
-  document.getElementById("pdf_sum").textContent = fmt(subtotal);
-  const tax = Math.round(subtotal * 0.05);
-  const total = subtotal + tax;
-  document.getElementById("sum_ex").textContent = fmt(subtotal);
-  document.getElementById("tax").textContent = fmt(tax);
-  document.getElementById("total_inc").textContent = fmt(total);
-  document.getElementById("sticky_total").textContent = fmt(total);
+  $("#pdf_sum").textContent = fmt(subtotal);
+  const tax=Math.round(subtotal*0.05), total=subtotal+tax;
+  $("#sum_ex").textContent = fmt(subtotal);
+  $("#tax").textContent = fmt(tax);
+  $("#total_inc").textContent = fmt(total);
+  $("#sticky_total").textContent = fmt(total);
 }
 
 function calc(){ rebuildPdfTable(); }
 
 function exportJson(){
-  const rows = document.querySelectorAll("#pdf_like tbody tr");
-  const pdfRows = [];
-  rows.forEach(tr=>{
-    const tds = tr.querySelectorAll("td");
-    pdfRows.push({
-      item: tds[0].textContent.trim(),
-      once: tds[1].textContent.trim(),
-      price_m: tds[2].textContent.trim(),
-      price_y: tds[3].textContent.trim(),
-      sets: tds[4].textContent.trim(),
-      total: tds[5].textContent.trim(),
-    });
+  const rows=document.querySelectorAll("#pdf_like tbody tr");
+  const pdfRows=[]; rows.forEach(tr=>{
+    const tds=tr.querySelectorAll("td");
+    pdfRows.push({ item:tds[0].textContent.trim(), once:tds[1].textContent.trim(), price_m:tds[2].textContent.trim(),
+      price_y:tds[3].textContent.trim(), sets:tds[4].textContent.trim(), total:tds[5].textContent.trim() });
   });
-  const payload = {
-    quote:{
-      date: document.getElementById("quote_date_view").value,
-      contact: document.getElementById("contact_person").value,
-    },
+  const payload={
+    quote:{ date:$("#quote_date_view").value, contact:$("#contact_person").value },
     company:{
-      name: $("#corp_name").value,
-      tax: $("#corp_tax").value,
-      tel: $("#corp_tel").value,
-      email: $("#corp_email").value,
-      addr: $("#corp_addr").value,
-      site: $("#corp_site").value,
-      logo: document.getElementById("logo_preview").src
+      name:$("#corp_name").value, tax:$("#corp_tax").value, tel:$("#corp_tel").value, email:$("#corp_email").value,
+      addr:$("#corp_addr").value, site:$("#corp_site").value, logo:$("#logo_preview").src
     },
     pay_method: $("#pay_method").value,
-    space_tier: document.getElementById("space_tier").selectedOptions[0].textContent,
-    ssl_qty: Number($("#ssl_qty").value),
+    space_tier: (document.getElementById("space_tier")?.selectedOptions[0]?.textContent)||"",
+    ssl_qty: Number((document.getElementById("ssl_qty")?.value)||1),
     table: pdfRows,
-    subtotal_ex_tax: document.getElementById("sum_ex").textContent,
-    tax_5pct: document.getElementById("tax").textContent,
-    total_incl_tax: document.getElementById("total_inc").textContent,
+    subtotal_ex_tax: $("#sum_ex").textContent, tax_5pct: $("#tax").textContent, total_incl_tax: $("#total_inc").textContent,
     generated_at: new Date().toISOString()
   };
-  const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `MECANGO_正式報價_v5_5_${(new Date()).toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=`MECANGO_正式報價_v5_7_${(new Date()).toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+}
+
+function enableExcelMode(){
+  document.body.classList.add("excel-mode");
+  // 更新 Excel header 欄位
+  headerPreview();
+  window.print();
+  // 列印完回到一般模式
+  setTimeout(()=>document.body.classList.remove("excel-mode"), 1000);
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
   initQuoteDate();
   addCloudRow(); // initial row defaults to 裂變版
-  document.getElementById("ssl_qty").addEventListener("change", calc);
-  document.getElementById("space_tier").addEventListener("change", calc);
-  document.getElementById("setup_enable").addEventListener("change", calc);
-  document.getElementById("setup_choice").addEventListener("change", calc);
-  document.getElementById("pay_method").addEventListener("change", ()=>{
-    document.getElementById("pay_view").textContent = document.getElementById("pay_method").value;
-  });
+  document.getElementById("pay_method").addEventListener("change", ()=>{ document.getElementById("pay_view").textContent = document.getElementById("pay_method").value; });
   document.getElementById("pay_view").textContent = document.getElementById("pay_method").value;
+  ["ssl_qty","space_tier","setup_enable","setup_choice"].forEach(id=>{ const el=document.getElementById(id); if(el){ el.addEventListener("change", calc); }});
+  document.addEventListener("input",(e)=>{ if(e.target && (e.target.classList.contains("manualPrice")||e.target.classList.contains("qtySel"))) calc(); });
   headerPreview();
   calc();
 });
