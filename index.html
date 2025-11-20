@@ -3,570 +3,421 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>MECANGO｜正式報價單（v5.7）</title>
+<title>MECANGO｜正式報價單（v6.4 經典深藍版）</title>
 <style>
+/* --- 全局變數 (還原 V5.7 經典深藍金配色) --- */
 :root{
-  --deep:#0A1221; --gold:#C9A227; --gold-soft:#E9D18A;
-  --card:#0C152A; --ink:#e7ecf3; --muted:#9aa4b2; --line:rgba(233,209,138,.28);
-  --ink-2:#cfd6e3;
+  --deep: #0A1221;       /* 網頁背景 */
+  --card: #0C152A;       /*區塊背景 */
+  --gold: #C9A227;       /* 金色主色 */
+  --gold-soft: #E9D18A;  /* 柔和金 */
+  --ink: #e7ecf3;        /* 主文字 */
+  --muted: #9aa4b2;      /* 次要文字 */
+  --line: rgba(233,209,138,.28); /* 金色細線 */
+  --input-bg: #071226;   /* 輸入框背景 */
+  --danger: #ff4d4f;     /* 刪除紅 */
 }
+
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.5}
 .wrap{max-width:1100px;margin:0 auto;padding:16px}
-.header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#0C152A,#0A1221)}
+
+/* --- UI 介面樣式 --- */
+.header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#0C152A,#0A1221);margin-bottom:12px}
 .brand{display:flex;gap:12px;align-items:center}
 .brand img{width:56px;height:56px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#0b1430}
 .brand .meta{display:grid;gap:4px}
 .brand .meta .corp{font-weight:800;font-size:18px;letter-spacing:.5px}
-.brand .meta .sub{font-size:12px;color:var(--ink-2)}
-.block{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);margin-top:12px}
-.h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.h .t{font-weight:800}
-.h .t em{font-style:normal;color:var(--gold-soft)}
+.brand .meta .sub{font-size:12px;color:var(--muted)}
+
+.block{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);margin-bottom:12px}
+.h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.h .t{font-weight:800;color:var(--ink)}
+.h .t em{font-style:normal;color:var(--gold-soft);margin-left:6px;font-size:0.9em}
+.h small{color:var(--muted)}
+
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:900px){.grid2{grid-template-columns:1fr}}
-.row{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center}
-.row label{color:var(--muted);font-size:14px}
-.row input,.row select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#071226;color:var(--ink);font-size:15px}
-.btns{display:flex;gap:8px;flex-wrap:wrap}
-.btn{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer;font-size:15px}
-.btn.primary{background:var(--gold);color:#111;border-color:var(--gold)}
-.flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.line{border-top:1px dashed var(--line);margin:10px 0}
-.rm{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#0a152a}
-.small{font-size:12px;color:var(--muted)}
 
-.summary{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.summary table{width:100%;border-collapse:collapse}
-.summary th,.summary td{padding:12px;border-bottom:1px solid var(--line)}
-.summary thead th{background:#0e1830}
-.summary .num{text-align:right;white-space:nowrap}
-.summary tfoot td{font-weight:700}
+.row{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center}
+.row label{color:var(--muted);font-size:14px;text-align:right}
+.row input,.row select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink);font-size:15px}
+.row input:focus,.row select:focus{border-color:var(--gold);outline:none;box-shadow: 0 0 0 1px var(--gold);}
 
-.totalgrid{display:grid;grid-template-columns:1fr 300px;gap:12px;align-items:flex-start}
-.totalbox{border:1px solid var(--line);border-radius:12px;padding:12px;background:#0b1630}
-.totalbox .row2{display:flex;justify-content:space-between;margin:6px 0}
-.totalbox .row2 strong{font-size:18px}
-.termblock{border:1px dashed var(--line);border-radius:12px;padding:10px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 16px;border-radius:12px;cursor:pointer;font-size:14px;transition:0.2s;display:flex;align-items:center;gap:6px;}
+.btn:hover{background:rgba(255,255,255,0.05);border-color:var(--gold-soft);}
+.btn.primary{background:var(--gold);color:#000;border-color:var(--gold);font-weight:bold;}
+.btn.primary:hover{opacity:0.9;}
+.btn[style*="color:var(--danger)"] { border-color: rgba(255, 77, 79, 0.3); color: var(--danger); }
+.btn[style*="color:var(--danger)"]:hover { background: rgba(255, 77, 79, 0.1); border-color: var(--danger); }
 
-.stickybar{position:sticky;bottom:8px;left:0;right:0;margin-top:12px;display:flex;gap:8px;justify-content:space-between;align-items:center;background:rgba(12,21,42,.9);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
-.stickybar .fig{font-weight:800;font-size:18px}
+/* 預覽表格 */
+.preview-table{width:100%;border-collapse:collapse;font-size:14px}
+.preview-table thead{background:#0e1830;}
+.preview-table th{text-align:left;padding:10px;color:var(--gold-soft);border-bottom:1px solid var(--line);font-size:13px}
+.preview-table td{padding:10px;border-bottom:1px solid rgba(233,209,138,0.1)}
+.preview-table .num{text-align:right;font-family:Consolas, monospace}
+.preview-foot{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.preview-foot div{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+.preview-foot .total{color:var(--gold);font-size:18px;font-weight:bold;color:var(--gold)}
 
-/* NEW: four-block grid layout */
-.config-grid{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:12px;
-}
-@media (max-width:900px){
-  .config-grid{ grid-template-columns:1fr }
-}
+/* 配置區塊 */
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:768px){.config-grid{grid-template-columns:1fr}}
 
-/* PRINT STYLES */
-@media print{
-  @page{ size:A4; margin:10mm; }
-  body{ background:#fff; color:#000; }
-  .wrap{ max-width:none; padding:0 }
-  .btns,.stickybar{ display:none !important }
-  /* Default: hide configuration blocks */
-  .print-hide{ display:none !important }
+.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flex input[type="checkbox"]{width:20px;height:20px;appearance:none;border:1px solid var(--line);border-radius:4px;background:var(--input-bg);cursor:pointer;position:relative;top:1px;}
+.flex input[type="checkbox"]:checked{background:var(--gold);border-color:var(--gold);}
+.flex input[type="checkbox"]:checked::after{content:'✔';color:#000;font-size:14px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}
+.flex small{color:var(--muted)}
 
-  /* Excel mode overrides when body has .excel-mode */
-  body.excel-mode .header{ display:none !important }
-  body.excel-mode .block{ border:0; background:#fff; }
-  body.excel-mode .print-hide{ display:none !important }
-  body.excel-mode .termblock, body.excel-mode .totalbox{ display:none !important }
-  body.excel-mode .summary{ border:0 }
-  body.excel-mode .summary thead th{ background:#fff; color:#000; }
-  body.excel-mode .summary table{
-    border-collapse:collapse;
-    width:100%;
-    font-size:11px;
+.rm{color:var(--danger);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,77,79,0.3);border-radius:8px;background:rgba(255,77,79,0.1);font-size:13px}
+.rm:hover{background:var(--danger);color:#fff}
+.add-btn{width:100%;padding:10px;border:1px dashed var(--line);background:rgba(12, 21, 42, 0.5);color:var(--muted);cursor:pointer;border-radius:12px;margin-top:8px;transition:0.2s}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201, 162, 39, 0.1);}
+
+/* --- 列印與輸出結構 (Print Layout) --- */
+#print-layout { display: none; }
+
+@media print {
+  @page { size: A4; margin: 10mm; }
+  body { background: #fff; color: #000; -webkit-print-color-adjust: exact; }
+  .wrap { display: none; }
+  
+  #print-layout { 
+    display: block; 
+    width: 100%;
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
   }
-  body.excel-mode .summary th, 
-  body.excel-mode .summary td{
-    border:1px solid #000;
-    padding:6px 6px;
-  }
-  body.excel-mode .summary tfoot td{
-    font-weight:700;
-    border-top:2px solid #000;
-  }
-  /* Excel-mode header rows shown as a small table */
-  body.excel-mode #excel_header{ display:block !important }
+  
+  .print-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 20px; letter-spacing: 2px; }
+  
+  /* 客戶資訊表格 */
+  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+  .info-table th, .info-table td { border: 1px solid #999; padding: 8px; }
+  .info-table th { background-color: #f0f0f0 !important; width: 15%; text-align: center; font-weight: bold; }
+  .info-table td { width: 35%; }
+  
+  /* 主報價表格 */
+  .main-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .main-table th { background-color: #e6e6e6 !important; border: 1px solid #999; padding: 10px 6px; text-align: center; font-weight: bold; }
+  .main-table td { border: 1px solid #ccc; padding: 8px 6px; vertical-align: middle; }
+  .main-table .col-name { text-align: left; }
+  .main-table .col-num { text-align: right; }
+  .main-table .col-center { text-align: center; }
+  
+  /* Footer */
+  .footer-table { width: 100%; border-collapse: collapse; margin-top: 0; }
+  .footer-table td { padding: 8px 6px; text-align: right; font-size: 13px; border-right: 1px solid #ccc; }
+  .ft-row td { border-bottom: 1px solid #ccc; }
+  .ft-total td { border-bottom: 2px solid #000; font-weight: 900; font-size: 15px; background-color: #fcfcfc; }
+  .label-col { width: 80%; font-weight: bold; }
+  .val-col { width: 20%; }
 }
-
-/* Hidden by default, shown only in excel-mode print */
-#excel_header{ display:none; margin-top:12px }
-#excel_header table{ width:100%; border-collapse:collapse; background:#fff; color:#000 }
-#excel_header th,#excel_header td{ border:1px solid #000; padding:6px 8px; font-size:11px; text-align:left }
-#excel_header .title{ font-weight:800 }
-
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- 頁首 -->
+<div class="wrap">
   <div class="header">
     <div class="brand">
-      <img id="logo_preview" src="https://crmpos.mecango.com/_files/49/9040149/f/eae0f725de036939.png" alt="Logo" />
+      <img src="https://crmpos.mecango.com/_files/49/9040149/f/eae0f725de036939.png">
       <div class="meta">
-        <div class="corp" id="corp_name_view">屹登股份有限公司</div>
-        <div class="sub" id="corp_sub_view">統編：90693783｜地址：高雄市左營區孟子路37號3樓</div>
+        <div class="corp">屹登股份有限公司</div>
+        <div class="sub">統編：90693783</div>
       </div>
     </div>
     <div class="btns">
-      <button class="btn" onclick="window.print()">🖨️ 一般列印</button>
-      <button class="btn" onclick="enableExcelMode()">📄 表格式列印</button>
-      <button class="btn" onclick="exportJson()">⬇️ 匯出 JSON</button>
+      <button class="btn primary" onclick="window.print()">🖨️ 列印 / PDF</button>
+      <button class="btn" onclick="copyExcelHTML()">📋 複製表格 (Excel)</button>
+      <button class="btn" onclick="clearData()" style="color:var(--danger);border-color:var(--danger)">✕ 重填</button>
     </div>
   </div>
 
-  <!-- 報價單資訊 -->
   <div class="block">
-    <div class="h"><div class="t">報價單資訊 <em>Quote Info</em></div><span class="badge">合計顯示含稅5%</span></div>
+    <div class="h"><div class="t">客戶資訊 <em>Client Info</em></div></div>
     <div class="grid2">
-      <div class="row"><label>報價日期</label><input id="quote_date_view" type="date"></div>
-      <div class="row"><label>公司抬頭</label><input id="corp_name" placeholder=""></div>
-      <div class="row"><label>聯絡人</label><input id="contact_person" placeholder=""></div>
-      <div class="row"><label>統一編號</label><input id="corp_tax" placeholder="" inputmode="numeric"></div>
-      <div class="row"><label>電話</label><input id="corp_tel" placeholder="" inputmode="tel"></div>
-      <div class="row"><label>Email</label><input id="corp_email" placeholder="" inputmode="email"></div>
-      <div class="row"><label>公司地址</label><input id="corp_addr" placeholder=""></div>
-      <div class="row"><label>官網</label><input id="corp_site" placeholder="" inputmode="url"></div>
+      <div class="row"><label>報價日期</label><input id="in_date" type="date" oninput="render()"></div>
+      <div class="row"><label>公司抬頭</label><input id="in_corp" placeholder="客戶名稱" oninput="render()"></div>
+      <div class="row"><label>聯絡人</label><input id="in_contact" placeholder="姓名" oninput="render()"></div>
+      <div class="row"><label>統一編號</label><input id="in_tax" placeholder="8碼統編" oninput="render()"></div>
+      <div class="row"><label>電話</label><input id="in_tel" placeholder="聯絡電話" oninput="render()"></div>
+      <div class="row"><label>Email</label><input id="in_email" placeholder="信箱" oninput="render()"></div>
+      <div class="row"><label>地址</label><input id="in_addr" placeholder="公司地址" oninput="render()"></div>
       <div class="row"><label>付款方式</label>
-        <select id="pay_method">
-          <option>匯款</option><option>現金</option><option>刷卡(5%)</option><option>無卡分期(5%)</option>
+        <select id="in_pay" onchange="render()">
+          <option>匯款</option><option>現金</option><option>刷卡(5%)</option>
         </select>
       </div>
     </div>
   </div>
 
-  <!-- 並排兩排：系統平台 / 雲端資料庫 / 加值服務 / 設備 -->
+  <div class="block">
+    <div class="h"><div class="t">報價預覽 <em>Quote Preview</em></div><small>此處僅供預覽，列印格式會不同</small></div>
+    <table class="preview-table">
+      <thead><tr><th>項目</th><th class="num">年費</th><th class="num">數量</th><th class="num">小計</th></tr></thead>
+      <tbody id="ui_tbody"></tbody>
+    </table>
+    <div class="preview-foot">
+      <div><span>小計(未稅)</span><span id="ui_sub">0</span></div>
+      <div><span>稅額(5%)</span><span id="ui_tax">0</span></div>
+      <div class="total"><span>總計</span><span id="ui_total">0</span></div>
+    </div>
+  </div>
+
   <div class="config-grid">
-    <!-- 系統平台 -->
-    <div class="block print-hide">
-      <div class="h"><div class="t">系統平台 <em>Platform</em></div><span class="badge2">一次性＋年費</span></div>
+    <div class="block">
+      <div class="h"><div class="t">系統平台 <em>Platform</em></div></div>
       <div class="flex">
-        <label class="flex"><input type="checkbox" id="setup_enable" style="width:22px;height:22px" checked> <span style="margin-left:8px">系統建置費</span></label>
-        <select id="setup_choice" style="min-width:260px">
-          <option value="CRM 建置費|15000">CRM 建置費（15,000 元）</option>
-          <option value="餐飲POS 建置費|18000">餐飲POS 建置費（18,000 元）</option>
-          <option value="美業POS 建置費|20000">美業POS 建置費（20,000 元）</option>
-          <option value="CRM 電商建置|25000">CRM 電商建置（25,000 元）</option>
-          <option value="影音開課建置費|35000">影音開課建置費（35,000 元）</option>
-        </select>
+        <input type="checkbox" id="setup_chk" checked onchange="render()"> <small>建置費</small>
+        <select id="setup_sel" style="flex:1" onchange="render()"></select>
       </div>
-      <div class="flex" style="margin-top:6px">
-        <span>空間/人數</span>
-        <select id="space_tier" style="min-width:260px">
-          <option value="0|50G/10,000人 $0/月">50G/10,000人 $0/月</option>
-          <option value="500|100G/2萬人 +$500/月">100G/2萬人 +$500/月</option>
-          <option value="1000|100G/5萬人 +$1,000/月">100G/5萬人 +$1,000/月</option>
-          <option value="1500|200G/10萬人 +$1,500/月">200G/10萬人 +$1,500/月</option>
-        </select>
+      <div class="flex" style="margin-top:10px">
+        <small>空間</small>
+        <select id="space_sel" style="flex:1" onchange="render()"></select>
       </div>
-      <div class="flex" style="margin-top:6px">
-        <span>SSL 組數（$2,000/年）</span>
-        <select id="ssl_qty" style="min-width:120px"></select>
+      <div class="flex" style="margin-top:10px">
+        <small>SSL憑證</small>
+        <select id="ssl_sel" style="width:60px" onchange="render()"></select> 組
       </div>
     </div>
-
-    <!-- 雲端資料庫 -->
-    <div class="block print-hide">
-      <div class="h"><div class="t">雲端資料庫 <em>Cloud Database</em></div><span class="badge2">可新增多筆</span></div>
-      <div id="cloud_rows"></div>
-      <div class="line"></div>
-      <button class="btn" onclick="addCloudRow()">＋ 新增一筆雲端資料庫</button>
+    <div class="block">
+      <div class="h"><div class="t">雲端資料庫 <em>Cloud DB</em></div></div>
+      <div id="cloud_list"></div>
+      <button class="add-btn" onclick="addCloudRow()">+ 新增雲端方案</button>
     </div>
-
-    <!-- 加值服務 -->
-    <div class="block print-hide">
-      <div class="h"><div class="t">加值服務 <em>Add-ons</em></div><span class="badge2">可新增多筆</span></div>
-      <div id="addon_rows"></div>
-      <div class="line"></div>
-      <button class="btn" onclick="addAddonRow()">＋ 新增加值服務</button>
+    <div class="block">
+      <div class="h"><div class="t">加值服務 <em>Add-ons</em></div></div>
+      <div id="addon_list"></div>
+      <button class="add-btn" onclick="addAddonRow()">+ 新增加值服務</button>
     </div>
-
-    <!-- 設備 -->
-    <div class="block print-hide">
-      <div class="h"><div class="t">設備 <em>Hardware</em></div><span class="badge2">可新增多筆</span></div>
-      <div id="device_rows"></div>
-      <div class="line"></div>
-      <button class="btn" onclick="addDeviceRow()">＋ 新增設備</button>
+    <div class="block">
+      <div class="h"><div class="t">硬體設備 <em>Hardware</em></div></div>
+      <div id="device_list"></div>
+      <button class="add-btn" onclick="addDeviceRow()">+ 新增硬體設備</button>
     </div>
   </div>
+</div>
 
-  <!-- 訂購內容說明 -->
-  <div class="block summary">
-    <div class="h"><div class="t">訂購內容說明 <em>Order Summary</em></div></div>
-    <table id="pdf_like">
-      <thead>
-        <tr>
-          <th>項目</th>
-          <th class="num">單次</th>
-          <th class="num">單價(月)</th>
-          <th class="num">單價(年)</th>
-          <th class="num">套數</th>
-          <th class="num">總金額</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr><td colspan="5" class="num">小計（未稅）</td><td class="num" id="pdf_sum">0</td></tr>
-      </tfoot>
-    </table>
-  </div>
+<div id="print-layout">
+  <div class="print-title">正式報價單</div>
+  
+  <table class="info-table">
+    <tr>
+      <th>報價日期</th><td id="p_date"></td>
+      <th>公司抬頭</th><td id="p_corp"></td>
+    </tr>
+    <tr>
+      <th>聯絡人</th><td id="p_contact"></td>
+      <th>統一編號</th><td id="p_tax_id"></td>
+    </tr>
+    <tr>
+      <th>電話</th><td id="p_tel"></td>
+      <th>Email</th><td id="p_email"></td>
+    </tr>
+    <tr>
+      <th>公司地址</th><td colspan="3" id="p_addr"></td>
+    </tr>
+    <tr>
+      <th>付款方式</th><td colspan="3" id="p_pay"></td>
+    </tr>
+  </table>
 
-  <!-- Excel-mode 專用：簡要抬頭（印出時才顯示） -->
-  <div id="excel_header">
-    <table>
-      <tr><th class="title" colspan="4">正式報價單</th></tr>
-      <tr><th>報價日期</th><td id="x_date"></td><th>公司抬頭</th><td id="x_name"></td></tr>
-      <tr><th>聯絡人</th><td id="x_contact"></td><th>統一編號</th><td id="x_tax"></td></tr>
-      <tr><th>電話</th><td id="x_tel"></td><th>Email</th><td id="x_email"></td></tr>
-      <tr><th>公司地址</th><td colspan="3" id="x_addr"></td></tr>
-      <tr><th>官網</th><td colspan="3" id="x_site"></td></tr>
-    </table>
-  </div>
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th width="30%">項目名稱</th>
+        <th width="14%">單次費用</th>
+        <th width="14%">月費</th>
+        <th width="14%">年費</th>
+        <th width="10%">數量/套數</th>
+        <th width="18%">小計 (未稅)</th>
+      </tr>
+    </thead>
+    <tbody id="p_tbody">
+      </tbody>
+  </table>
 
-  <!-- 備註 / 合計 / 匯款資訊 -->
-  <div class="totalgrid">
-    <div class="block termblock">
-      <div class="h"><div class="t">備註與條款 <em>Terms</em></div></div>
-      <ul style="margin:0 0 6px 18px">
-        <li>價格均為未稅，合計顯示含稅 5%。</li>
-        <li>報價有效期限為30天，逾期請重新詢價。</li>
-        <li>如使用刷卡/無卡分期，將另加手續費。</li>
-      </ul>
-      <div class="line"></div>
-      <div>
-        <div class="t" style="font-weight:700;margin:4px 0 6px 0">匯款資訊</div>
-        <div class="small">
-          戶名：屹登股份有限公司<br>
-          銀行：807永豐銀行北高雄分行<br>
-          帳號：04201810038503
-        </div>
-      </div>
-    </div>
-
-    <div class="block totalbox">
-      <div class="row2"><div>小計（未稅）</div><div id="sum_ex">0</div></div>
-      <div class="row2"><div>稅額（5%）</div><div id="tax">0</div></div>
-      <div class="row2"><strong>合計（含稅）</strong><strong id="total_inc">0</strong></div>
-      <div class="small" style="margin-top:6px">付款方式：<span id="pay_view">匯款</span></div>
-    </div>
-  </div>
-
-  <!-- Sticky 合計（手機友善） -->
-  <div class="stickybar">
-    <div>合計（含稅）</div>
-    <div class="fig" id="sticky_total">0</div>
-    <div class="btns">
-      <button class="btn primary" onclick="window.print()">🖨️ 一般列印</button>
-      <button class="btn" onclick="enableExcelMode()">📄 表格式列印</button>
-    </div>
-  </div>
-
+  <table class="footer-table">
+    <tr class="ft-row">
+      <td class="label-col">小計 Amount (未稅)</td>
+      <td class="val-col" id="p_sub">0</td>
+    </tr>
+    <tr class="ft-row">
+      <td class="label-col">稅額 Tax (5%)</td>
+      <td class="val-col" id="p_calc_tax">0</td>
+    </tr>
+    <tr class="ft-total">
+      <td class="label-col">總計 Total (含稅)</td>
+      <td class="val-col" id="p_total">0</td>
+    </tr>
+  </table>
 </div>
 
 <script>
-const $ = (sel)=>document.querySelector(sel);
-const fmt = (n)=> Number.isFinite(+n) ? (+n).toLocaleString('zh-TW') : n;
-const num = (v)=> { const n = parseFloat(String(v).replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; };
+const $ = (s)=>document.querySelector(s);
+const fmt = (n)=>n.toLocaleString('zh-TW');
+const num = (v)=>parseFloat(String(v).replace(/[^\d.-]/g,''))||0;
 
-function initQuoteDate(){ const d=new Date(),ds=d.toISOString().slice(0,10); const el=$("#quote_date_view"); if(!el.value) el.value=ds; }
-(function initSSL(){ const sel=$("#ssl_qty"); if(!sel) return; sel.innerHTML=""; for(let i=1;i<=20;i++){const o=document.createElement('option'); o.value=i; o.textContent=i; if(i===1) o.selected=true; sel.appendChild(o);} })();
+// 資料定義
+const DATA = {
+  setup: [
+    {t:"CRM 建置費",p:15000}, {t:"餐飲POS 建置費",p:18000}, {t:"美業POS 建置費",p:20000},
+    {t:"CRM 電商建置",p:25000}, {t:"影音開課建置費",p:35000}
+  ],
+  space: [
+    {t:"50G/1萬人 ($0)",m:0}, {t:"100G/2萬人 ($500)",m:500},
+    {t:"100G/5萬人 ($1000)",m:1000}, {t:"200G/10萬人 ($1500)",m:1500}
+  ],
+  cloud: [
+    {t:"CRM(單店)－微店版",m:3000}, {t:"CRM(單店)－專業版",m:4000}, {t:"CRM(單店)－裂變版",m:5000},
+    {t:"CRM+POS－小資版",m:3600}, {t:"CRM+POS－門店版",m:5600}, {t:"影音開課(500G)",m:5500},
+    {t:"總店系統",y:60000}, {t:"電商平台",y:18000}
+  ],
+  addon: [
+    {t:"訂位/預約系統",y:15000}, {t:"多元支付",y:5000}, {t:"多店核銷",m:1000},
+    {t:"電子發票(藍新)",o:3500}, {t:"聯盟行銷",y:12000}, {t:"API串接",y:4200}
+  ],
+  device: [
+    {t:"Wifi+USB出單機(80mm)",o:5500}, {t:"標籤貼紙機",o:6500}, {t:"二維條碼器",o:1800},
+    {t:"出單紙(80*80)",o:1800}, {t:"標籤紙(100卷)",o:27000}
+  ]
+};
 
-// Options
-const CLOUD_OPTIONS = [
-  {name:"總店系統", yearly:60000},
-  {name:"CRM子網", manual:true},
-  {name:"CRM(單店)－微店版", monthly:3000},
-  {name:"CRM(單店)－專業版", monthly:4000},
-  {name:"CRM(單店)－裂變版", monthly:5000},
-  {name:"CRM+POS－小資版", monthly:3600},
-  {name:"CRM+POS－攤商版", monthly:4600},
-  {name:"CRM+POS－門店版", monthly:5600},
-  {name:"美業預約POS－創業版", monthly:3600},
-  {name:"美業預約POS－專家版", monthly:4600},
-  {name:"美業預約POS－企業版", monthly:5600},
-  {name:"影音開課(500G)", monthly:5500},
-  {name:"電商平台", yearly:18000},
-  {name:"派工POS", yearly:12000},
-];
-const ADDON_OPTIONS = [
-  {name:"訂位/預約系統", yearly:15000},
-  {name:"多元支付", yearly:5000},
-  {name:"多店核銷", monthly:1000},
-  {name:"電子發票(藍新)", once:3500},
-  {name:"推薦集點", yearly:5000},
-  {name:"選單修改", once:3000},
-  {name:"聯盟行銷", yearly:12000},
-  {name:"微商模組", yearly:24000},
-  {name:"API串接", yearly:4200},
-];
-const DEVICE_OPTIONS = [
-  {name:"Wifi+USB出單機(80mm)", once:5500, unit:"台"},
-  {name:"Wifi+USB出單機(58mm)+發票機", once:8500, unit:"台"},
-  {name:"Wifi+USB標籤貼紙機", once:6500, unit:"台"},
-  {name:"出單紙(80*80)", once:1800},
-  {name:"發票紙", once:1980},
-  {name:"標籤紙(100卷)", once:27000},
-  {name:"二維條碼器_無線藍牙", once:1800, unit:"支"},
-  {name:"電子錢櫃", once:1980, unit:"支"},
-];
+// 初始化
+function init(){
+  $("#in_date").value = new Date().toISOString().slice(0,10);
+  DATA.setup.forEach(x=> $("#setup_sel").add(new Option(`${x.t} ($${fmt(x.p)})`, `${x.t}|${x.p}`)));
+  DATA.space.forEach(x=> $("#space_sel").add(new Option(x.t, `${x.t}|${x.m}`)));
+  for(let i=1;i<=20;i++) $("#ssl_sel").add(new Option(i,i));
+  addCloudRow(); 
+  render();
+}
 
-function cloudOptionsHTML(){
-  return CLOUD_OPTIONS.map(o=>{
-    if(o.manual) return `<option value="man||${o.name}">${o.name}（手動輸入／月）</option>`;
-    const label = o.monthly ? `${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）` : `${o.name}（${o.yearly.toLocaleString('zh-TW')} 元/年）`;
-    const value = o.monthly ? `m|${o.monthly}|${o.name}` : `y|${o.yearly}|${o.name}`;
-    return `<option value="${value}">${label}</option>`;
+function getOpts(key){
+  return DATA[key].map(x=>{
+    let val="", label=x.t;
+    if(x.o) { val=`o|${x.o}`; label+=` ($${fmt(x.o)}/次)`; }
+    else if(x.m) { val=`m|${x.m}`; label+=` ($${fmt(x.m)}/月)`; }
+    else { val=`y|${x.y}`; label+=` ($${fmt(x.y)}/年)`; }
+    return `<option value="${val}|${x.t}">${label}</option>`;
   }).join('');
 }
-function addonOptionsHTML(){
-  return ADDON_OPTIONS.map(o=>{
-    if(o.once) return `<option value="o|${o.once}|${o.name}">${o.name}（${o.once.toLocaleString('zh-TW')} 元/次）</option>`;
-    if(o.monthly) return `<option value="m|${o.monthly}|${o.name}">${o.name}（${o.monthly.toLocaleString('zh-TW')} 元/月）</option>`;
-    return `<option value="y|${o.yearly}|${o.name}">${o.name}（${o.yearly.toLocaleString('zh-TW')} 元/年）</option>`;
-  }).join('');
-}
-function deviceOptionsHTML(){
-  return DEVICE_OPTIONS.map(o=>`<option value="o|${o.once}|${o.name}">${o.name}（${o.once.toLocaleString('zh-TW')} 元${o.unit?"/"+o.unit:""}）</option>`).join('');
-}
 
-function qtySelectHTML(cls="qtySel",max=20,def=1){
-  const opts=[]; for(let i=1;i<=max;i++){opts.push(`<option ${i===def?'selected':''}>${i}</option>`)}; return `<select class="${cls}">${opts.join('')}</select>`;
+function addRow(containerId, type){
+  const div = document.createElement('div');
+  div.className = 'flex';
+  div.style.marginBottom = '8px';
+  div.innerHTML = `
+    <select class="${type}-sel" style="flex:1" onchange="render()">${getOpts(type)}</select>
+    <select class="qty" style="width:60px;text-align:center" onchange="render()">
+      ${[...Array(20).keys()].map(i=>`<option ${i===0?'selected':''}>${i+1}</option>`).join('')}
+    </select>
+    <div class="rm" onclick="this.parentElement.remove();render()">✕</div>
+  `;
+  $(`#${containerId}`).appendChild(div);
+  render();
 }
+function addCloudRow(){ addRow('cloud_list','cloud'); }
+function addAddonRow(){ addRow('addon_list','addon'); }
+function addDeviceRow(){ addRow('device_list','device'); }
 
-function cloudRowHTML(){
-  return `<div class="flex cloudRow" style="gap:10px;align-items:center;margin-bottom:8px">
-    <select class="cloudSel" style="min-width:360px">${cloudOptionsHTML()}</select>
-    <span class="manualBox">單價(月)：<input class="manualPrice" type="number" inputmode="numeric" placeholder="請輸入"> 元</span>
-    <div>套數：${qtySelectHTML("qtySel",20,1)}</div>
-    <button class="rm" title="移除">移除</button>
-  </div>`;
-}
-function addonRowHTML(){
-  return `<div class="flex addonRow" style="gap:10px;align-items:center;margin-bottom:8px">
-    <select class="addonSel" style="min-width:360px">${addonOptionsHTML()}</select>
-    <div>套數：${qtySelectHTML("qtySel",20,1)}</div>
-    <button class="rm" title="移除">移除</button>
-  </div>`;
-}
-function deviceRowHTML(){
-  return `<div class="flex deviceRow" style="gap:10px;align-items:center;margin-bottom:8px">
-    <select class="deviceSel" style="min-width:360px">${deviceOptionsHTML()}</select>
-    <div>數量：${qtySelectHTML("qtySel",50,1)}</div>
-    <button class="rm" title="移除">移除</button>
-  </div>`;
-}
+function render(){
+  // 1. 同步資訊 (已包含統編 Bug 修復)
+  $("#p_date").textContent = $("#in_date").value;
+  $("#p_corp").textContent = $("#in_corp").value;
+  $("#p_contact").textContent = $("#in_contact").value;
+  $("#p_tax_id").textContent = $("#in_tax").value; // ID 修正
+  $("#p_tel").textContent = $("#in_tel").value;
+  $("#p_email").textContent = $("#in_email").value;
+  $("#p_addr").textContent = $("#in_addr").value;
+  $("#p_pay").textContent = $("#in_pay").value;
 
-function addCloudRow(){
-  const c=$("#cloud_rows"); c.insertAdjacentHTML("beforeend", cloudRowHTML());
-  const row=c.lastElementChild; bindCloudEvents(row);
-  const sel=row.querySelector(".cloudSel"); const target="m|5000|CRM(單店)－裂變版";
-  const opt=[...sel.options].find(o=>o.value===target); if(opt) sel.value=target;
-  sel.dispatchEvent(new Event('change')); calc();
-}
-function addAddonRow(){ const c=$("#addon_rows"); c.insertAdjacentHTML("beforeend", addonRowHTML()); bindAddonEvents(c.lastElementChild); calc(); }
-function addDeviceRow(){ const c=$("#device_rows"); c.insertAdjacentHTML("beforeend", deviceRowHTML()); bindDeviceEvents(c.lastElementChild); calc(); }
+  // 2. 計算
+  let subtotal = 0;
+  let ui_html = "";
+  let p_html = "";
 
-function bindCloudEvents(row){
-  const sel=row.querySelector(".cloudSel"), box=row.querySelector(".manualBox"), price=row.querySelector(".manualPrice");
-  function toggle(){ if(sel.value.startsWith("man|")){box.style.display="inline-flex"; price.focus();} else {box.style.display="none"; price.value="";} calc(); }
-  sel.addEventListener("change", toggle);
-  row.querySelector(".qtySel").addEventListener("change", calc);
-  price.addEventListener("input", calc);
-  row.querySelector(".rm").addEventListener("click", ()=>{row.remove(); calc();});
-  toggle();
-}
-function bindAddonEvents(row){
-  row.querySelector(".addonSel").addEventListener("change", calc);
-  row.querySelector(".qtySel").addEventListener("change", calc);
-  row.querySelector(".rm").addEventListener("click", ()=>{ row.remove(); calc(); });
-}
-function bindDeviceEvents(row){
-  row.querySelector(".deviceSel").addEventListener("change", calc);
-  row.querySelector(".qtySel").addEventListener("change", calc);
-  row.querySelector(".rm").addEventListener("click", ()=>{ row.remove(); calc(); });
-}
-
-function headerPreview(){
-  const name=$("#corp_name").value || "（公司抬頭）";
-  $("#corp_name_view").textContent=name;
-  // fill excel header fields
-  $("#x_date").textContent = $("#quote_date_view").value || "";
-  $("#x_name").textContent = $("#corp_name").value || "";
-  $("#x_contact").textContent = $("#contact_person").value || "";
-  $("#x_tax").textContent = $("#corp_tax").value || "";
-  $("#x_tel").textContent = $("#corp_tel").value || "";
-  $("#x_email").textContent = $("#corp_email").value || "";
-  $("#x_addr").textContent = $("#corp_addr").value || "";
-  $("#x_site").textContent = $("#corp_site").value || "";
-}
-["corp_name","contact_person","corp_tax","corp_tel","corp_email","corp_addr","corp_site","quote_date_view"].forEach(id=>{
-  document.addEventListener("input",(e)=>{ if(e.target && e.target.id===id) headerPreview(); });
-});
-
-function readSetup(){
-  const enabled=$("#setup_enable")?.checked;
-  if(!enabled) return null;
-  const [name,price]=($("#setup_choice").value||"").split("|");
-  return {name, price:num(price)};
-}
-function readSpaceTier(){
-  const el=$("#space_tier"); if(!el) return null;
-  const [m,label]=el.value.split("|"); const monthly=num(m);
-  return {name:`雲端空間/人數方案（${label}）`, monthly, yearly:monthly*12, qty:1};
-}
-function readCloudRows(){
-  return [...document.querySelectorAll(".cloudRow")].map(r=>{
-    const [type, price, name] = r.querySelector(".cloudSel").value.split("|");
-    const qty = num(r.querySelector(".qtySel").value);
-    if(type==="man"){
-      const pm = num(r.querySelector(".manualPrice").value||0);
-      return {name, monthly:pm, yearly:pm*12, qty};
-    }else{
-      const monthly=(type==="m")?num(price):Math.round(num(price)/12);
-      const yearly=(type==="y")?num(price):num(price)*12;
-      return {name, monthly, yearly, qty};
-    }
-  });
-}
-function readAddonRows(){
-  return [...document.querySelectorAll(".addonRow")].map(r=>{
-    const [type, price, name] = r.querySelector(".addonSel").value.split("|");
-    const qty = num(r.querySelector(".qtySel").value);
-    if(type==="o"){ return {name, once:num(price), qty}; }
-    if(type==="m"){ const m=num(price); return {name, monthly:m, yearly:m*12, qty}; }
-    const y=num(price); return {name, monthly:Math.round(y/12), yearly:y, qty};
-  });
-}
-function readDeviceRows(){
-  return [...document.querySelectorAll(".deviceRow")].map(r=>{
-    const [_, price, name] = r.querySelector(".deviceSel").value.split("|");
-    const qty = num(r.querySelector(".qtySel").value);
-    return {name, once:num(price), qty};
-  });
-}
-
-function rebuildPdfTable(){
-  const tb=$("#pdf_like tbody"); tb.innerHTML=""; let subtotal=0;
-
-  const setup=readSetup();
-  if(setup){
-    subtotal+=setup.price;
-    tb.insertAdjacentHTML("beforeend", `<tr>
-      <td>${setup.name}</td><td class="num">${fmt(setup.price)} 元</td><td class="num"></td>
-      <td class="num"></td><td class="num">1</td><td class="num">${fmt(setup.price)} 元</td></tr>`);
+  function push(name, once, mon, year, qty, total){
+    subtotal += total;
+    ui_html += `<tr><td>${name}</td><td class="num">${year?fmt(year):'-'}</td><td class="num">${qty}</td><td class="num">${fmt(total)}</td></tr>`;
+    p_html += `
+      <tr>
+        <td class="col-name">${name}</td>
+        <td class="col-num">${once ? fmt(once) : '-'}</td>
+        <td class="col-num">${mon ? fmt(mon) : '-'}</td>
+        <td class="col-num">${year ? fmt(year) : '-'}</td>
+        <td class="col-center">${qty}</td>
+        <td class="col-num">${fmt(total)}</td>
+      </tr>
+    `;
   }
 
-  const clouds=readCloudRows();
-  clouds.forEach(c=>{
-    const sub=c.yearly*c.qty; subtotal+=sub;
-    tb.insertAdjacentHTML("beforeend", `<tr>
-      <td>${c.name}</td><td class="num"></td><td class="num">${fmt(c.monthly)}</td>
-      <td class="num">${fmt(c.yearly)}</td><td class="num">${c.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
-  });
-
-  const sp=readSpaceTier();
-  if(sp){
-    const sub=sp.yearly*sp.qty; subtotal+=sub;
-    tb.insertAdjacentHTML("beforeend", `<tr>
-      <td>${sp.name}</td><td class="num"></td><td class="num">${fmt(sp.monthly)}</td>
-      <td class="num">${fmt(sp.yearly)}</td><td class="num">${sp.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
+  if($("#setup_chk").checked){
+    const [n,p] = $("#setup_sel").value.split('|');
+    push(n, num(p), 0, 0, 1, num(p));
   }
+  const [sn, sm] = $("#space_sel").value.split('|');
+  if(num(sm)>0) push(`雲端空間 (${sn.split(' ')[0]})`, 0, sm, num(sm)*12, 1, num(sm)*12);
+  
+  const sslq = num($("#ssl_sel").value);
+  if(sslq>0) push("SSL 安全憑證", 0, Math.round(2000/12), 2000, sslq, sslq*2000);
 
-  const addons=readAddonRows();
-  addons.forEach(a=>{
-    if(a.once!=null){
-      const sub=a.once*a.qty; subtotal+=sub;
-      tb.insertAdjacentHTML("beforeend", `<tr>
-        <td>${a.name}</td><td class="num">${fmt(a.once)} 元</td><td class="num"></td>
-        <td class="num"></td><td class="num">${a.qty}</td><td class="num">${fmt(sub)} 元</td></tr>`);
-    }else{
-      const sub=a.yearly*a.qty; subtotal+=sub;
-      tb.insertAdjacentHTML("beforeend", `<tr>
-        <td>${a.name}</td><td class="num"></td><td class="num">${fmt(a.monthly)}</td>
-        <td class="num">${fmt(a.yearly)}</td><td class="num">${a.qty}</td><td class="num">${fmt(sub)} 元/年</td></tr>`);
-    }
-  });
-
-  const devices=readDeviceRows();
-  devices.forEach(d=>{
-    const sub=d.once*d.qty; subtotal+=sub;
-    tb.insertAdjacentHTML("beforeend", `<tr>
-      <td>${d.name}</td><td class="num">${fmt(d.once)} 元</td><td class="num"></td>
-      <td class="num"></td><td class="num">${d.qty}</td><td class="num">${fmt(sub)} 元</td></tr>`);
-  });
-
-  // SSL last row
-  const sslSel=document.getElementById("ssl_qty");
-  if(sslSel){
-    const sslQty = num(sslSel.value)||1, sslYearly=2000, sslSub=sslQty*sslYearly; subtotal+=sslSub;
-    tb.insertAdjacentHTML("beforeend", `<tr>
-      <td>SSL 年費</td><td class="num"></td><td class="num">${fmt(Math.round(sslYearly/12))}</td>
-      <td class="num">${fmt(sslYearly)}</td><td class="num">${sslQty}</td><td class="num">${fmt(sslSub)} 元/年</td></tr>`);
-  }
-
-  // Totals
-  $("#pdf_sum").textContent = fmt(subtotal);
-  const tax=Math.round(subtotal*0.05), total=subtotal+tax;
-  $("#sum_ex").textContent = fmt(subtotal);
-  $("#tax").textContent = fmt(tax);
-  $("#total_inc").textContent = fmt(total);
-  $("#sticky_total").textContent = fmt(total);
-}
-
-function calc(){ rebuildPdfTable(); }
-
-function exportJson(){
-  const rows=document.querySelectorAll("#pdf_like tbody tr");
-  const pdfRows=[]; rows.forEach(tr=>{
-    const tds=tr.querySelectorAll("td");
-    pdfRows.push({ item:tds[0].textContent.trim(), once:tds[1].textContent.trim(), price_m:tds[2].textContent.trim(),
-      price_y:tds[3].textContent.trim(), sets:tds[4].textContent.trim(), total:tds[5].textContent.trim() });
-  });
-  const payload={
-    quote:{ date:$("#quote_date_view").value, contact:$("#contact_person").value },
-    company:{
-      name:$("#corp_name").value, tax:$("#corp_tax").value, tel:$("#corp_tel").value, email:$("#corp_email").value,
-      addr:$("#corp_addr").value, site:$("#corp_site").value, logo:$("#logo_preview").src
-    },
-    pay_method: $("#pay_method").value,
-    space_tier: (document.getElementById("space_tier")?.selectedOptions[0]?.textContent)||"",
-    ssl_qty: Number((document.getElementById("ssl_qty")?.value)||1),
-    table: pdfRows,
-    subtotal_ex_tax: $("#sum_ex").textContent, tax_5pct: $("#tax").textContent, total_incl_tax: $("#total_inc").textContent,
-    generated_at: new Date().toISOString()
+  const processRows = (selClass) => {
+    document.querySelectorAll(selClass).forEach(el => {
+      const [mode, price, name] = el.value.split('|');
+      const qty = num(el.parentElement.querySelector('.qty').value);
+      const p = num(price);
+      let o=0, m=0, y=0, t=0;
+      if(mode==='o'){ o=p; t=p*qty; }
+      else if(mode==='m'){ m=p; y=p*12; t=y*qty; }
+      else if(mode==='y'){ y=p; m=Math.round(p/12); t=y*qty; }
+      push(name, o, m, y, qty, t);
+    });
   };
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download=`MECANGO_正式報價_v5_7_${(new Date()).toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+  processRows('.cloud-sel');
+  processRows('.addon-sel');
+  processRows('.device-sel');
+
+  $("#ui_tbody").innerHTML = ui_html;
+  $("#p_tbody").innerHTML = p_html;
+
+  const tax = Math.round(subtotal * 0.05);
+  const total = subtotal + tax;
+
+  $("#ui_sub").textContent = fmt(subtotal);
+  $("#ui_tax").textContent = fmt(tax);
+  $("#ui_total").textContent = fmt(total);
+  
+  // Print Footer (已包含稅額 Bug 修復)
+  $("#p_sub").textContent = fmt(subtotal);
+  $("#p_calc_tax").textContent = fmt(tax); // ID 修正
+  $("#p_total").textContent = fmt(total);
 }
 
-function enableExcelMode(){
-  document.body.classList.add("excel-mode");
-  // 更新 Excel header 欄位
-  headerPreview();
-  window.print();
-  // 列印完回到一般模式
-  setTimeout(()=>document.body.classList.remove("excel-mode"), 1000);
+function copyExcelHTML() {
+  render();
+  const printContent = document.getElementById('print-layout').innerHTML;
+  const html = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="utf-8"></head>
+    <body>${printContent}</body></html>
+  `;
+  const blob = new Blob([html], {type: 'text/html'});
+  const item = new ClipboardItem({'text/html': blob});
+  navigator.clipboard.write([item]).then(()=>{
+    alert("已複製！\n請打開 Excel 或 Google Sheet 直接貼上 (Ctrl+V)。");
+  }).catch(err=>{
+    alert("複製失敗，請手動列印成 PDF。");
+  });
 }
 
-document.addEventListener("DOMContentLoaded", ()=>{
-  initQuoteDate();
-  addCloudRow(); // initial row defaults to 裂變版
-  document.getElementById("pay_method").addEventListener("change", ()=>{ document.getElementById("pay_view").textContent = document.getElementById("pay_method").value; });
-  document.getElementById("pay_view").textContent = document.getElementById("pay_method").value;
-  ["ssl_qty","space_tier","setup_enable","setup_choice"].forEach(id=>{ const el=document.getElementById(id); if(el){ el.addEventListener("change", calc); }});
-  document.addEventListener("input",(e)=>{ if(e.target && (e.target.classList.contains("manualPrice")||e.target.classList.contains("qtySel"))) calc(); });
-  headerPreview();
-  calc();
-});
+function clearData(){
+  if(confirm("重置所有資料？")) location.reload();
+}
+
+init();
 </script>
 </body>
 </html>
