@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>MECANGO｜正式報價單（v6.7 匯款資訊版）</title>
+<title>MECANGO｜正式報價單（v6.8 圖片匯出版）</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* --- 全局變數 (V6.4 經典深藍金配色) --- */
 :root{
@@ -81,48 +82,52 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
 .add-btn{width:100%;padding:10px;border:1px dashed var(--line);background:rgba(12, 21, 42, 0.5);color:var(--muted);cursor:pointer;border-radius:12px;margin-top:8px;transition:0.2s}
 .add-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201, 162, 39, 0.1);}
 
-/* --- 列印與輸出結構 (Print Layout) --- */
-#print-layout { display: none; }
+/* --- 正式報價單樣式 (通用於列印與 PNG 匯出) --- */
+#print-layout { 
+  display: none; /* 預設隱藏，點匯出時會短暫顯示 */
+  width: 100%;
+  max-width: 800px; /* 限制寬度讓圖片比例好看 */
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  font-family: "Microsoft JhengHei", Arial, sans-serif;
+}
+
+.print-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 20px; letter-spacing: 2px; color: #000; }
+
+/* 客戶資訊表格 */
+.info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+.info-table th, .info-table td { border: 1px solid #999; padding: 8px; color: #000; }
+.info-table th { background-color: #f0f0f0 !important; width: 15%; text-align: center; font-weight: bold; }
+.info-table td { width: 35%; }
+
+/* 主報價表格 */
+.main-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.main-table th { background-color: #e6e6e6 !important; border: 1px solid #999; padding: 10px 6px; text-align: center; font-weight: bold; color: #000; }
+.main-table td { border: 1px solid #ccc; padding: 8px 6px; vertical-align: middle; color: #000; }
+.main-table .col-name { text-align: left; }
+.main-table .col-num { text-align: right; }
+.main-table .col-center { text-align: center; }
+
+/* Footer Totals */
+.footer-table { width: 100%; border-collapse: collapse; margin-top: 0; }
+.footer-table td { padding: 8px 6px; text-align: right; font-size: 13px; border-right: 1px solid #ccc; color: #000; }
+.ft-row td { border-bottom: 1px solid #ccc; }
+.ft-total td { border-bottom: 2px solid #000; font-weight: 900; font-size: 15px; background-color: #fcfcfc; }
+.label-col { width: 80%; font-weight: bold; }
+.val-col { width: 20%; }
+
+/* 匯款資訊區塊 (Excel Friendly) */
+.bank-box { width:100%; margin-top: 20px; border: 1px solid #000; color: #000; }
+.bank-box td { padding: 10px; font-size: 12px; line-height: 1.6; vertical-align: top; }
+.bank-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
 
 @media print {
   @page { size: A4; margin: 10mm; }
   body { background: #fff; color: #000; -webkit-print-color-adjust: exact; }
   .wrap { display: none; }
-  
-  #print-layout { 
-    display: block; 
-    width: 100%;
-    font-family: "Microsoft JhengHei", Arial, sans-serif;
-  }
-  
-  .print-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 20px; letter-spacing: 2px; }
-  
-  /* 客戶資訊表格 */
-  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
-  .info-table th, .info-table td { border: 1px solid #999; padding: 8px; }
-  .info-table th { background-color: #f0f0f0 !important; width: 15%; text-align: center; font-weight: bold; }
-  .info-table td { width: 35%; }
-  
-  /* 主報價表格 */
-  .main-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .main-table th { background-color: #e6e6e6 !important; border: 1px solid #999; padding: 10px 6px; text-align: center; font-weight: bold; }
-  .main-table td { border: 1px solid #ccc; padding: 8px 6px; vertical-align: middle; }
-  .main-table .col-name { text-align: left; }
-  .main-table .col-num { text-align: right; }
-  .main-table .col-center { text-align: center; }
-  
-  /* Footer Totals */
-  .footer-table { width: 100%; border-collapse: collapse; margin-top: 0; }
-  .footer-table td { padding: 8px 6px; text-align: right; font-size: 13px; border-right: 1px solid #ccc; }
-  .ft-row td { border-bottom: 1px solid #ccc; }
-  .ft-total td { border-bottom: 2px solid #000; font-weight: 900; font-size: 15px; background-color: #fcfcfc; }
-  .label-col { width: 80%; font-weight: bold; }
-  .val-col { width: 20%; }
-
-  /* 匯款資訊區塊 (Excel Friendly) */
-  .bank-box { width:100%; margin-top: 20px; border: 1px solid #000; page-break-inside: avoid; }
-  .bank-box td { padding: 10px; font-size: 12px; line-height: 1.6; vertical-align: top; }
-  .bank-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+  #print-layout { display: block; width: 100%; max-width: none; padding: 0; }
+  .bank-box { page-break-inside: avoid; }
 }
 </style>
 </head>
@@ -138,7 +143,8 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
       </div>
     </div>
     <div class="btns">
-      <button class="btn primary" onclick="window.print()">🖨️ 列印 / PDF</button>
+      <button class="btn primary" onclick="exportPNG()">📷 匯出圖片 (PNG)</button>
+      <button class="btn" onclick="window.print()">🖨️ 列印 / PDF</button>
       <button class="btn" onclick="copyExcelHTML()">📋 複製表格 (Excel)</button>
       <button class="btn" onclick="clearData()" style="color:var(--danger);border-color:var(--danger)">✕ 重填</button>
     </div>
@@ -392,14 +398,13 @@ function render(){
       const [mode, price, name] = el.value.split('|');
       const qty = num(el.parentElement.querySelector('.qty').value);
       
-      // Manual Input Logic
       const row = el.parentElement;
       const input = row.querySelector('.manual-price');
       let p = num(price);
       
       if(mode === 'man'){
          input.style.display = 'block';
-         p = num(input.value); // override price with input
+         p = num(input.value);
       } else {
          input.style.display = 'none';
       }
@@ -407,7 +412,7 @@ function render(){
       let o=0, m=0, y=0, t=0;
       if(mode==='o'){ o=p; t=p*qty; }
       else if(mode==='m'){ m=p; y=p*12; t=y*qty; }
-      else if(mode==='y' || mode==='man'){ y=p; m=Math.round(p/12); t=y*qty; } // Treat manual as Yearly
+      else if(mode==='y' || mode==='man'){ y=p; m=Math.round(p/12); t=y*qty; }
       
       push(name, o, m, y, qty, t);
     });
@@ -429,6 +434,31 @@ function render(){
   $("#p_sub").textContent = fmt(subtotal);
   $("#p_calc_tax").textContent = fmt(tax); 
   $("#p_total").textContent = fmt(total);
+}
+
+// 圖片匯出邏輯
+function exportPNG() {
+  render(); // 確保資料最新
+  const element = document.getElementById('print-layout');
+  
+  // 1. 暫時顯示元素在畫面上方(不會擋到太多，重點是不能 display:none)
+  element.style.display = 'block';
+  element.style.position = 'absolute';
+  element.style.left = '-9999px'; // 移出畫面外避免閃爍
+  element.style.top = '0';
+
+  // 2. 執行截圖
+  html2canvas(element, { scale: 2 }).then(canvas => {
+    // 3. 復原樣式
+    element.style.display = 'none';
+    
+    // 4. 下載圖片
+    const link = document.createElement('a');
+    const name = $("#in_corp").value || "MECANGO_報價單";
+    link.download = `${name}_${$("#in_date").value}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+  });
 }
 
 function copyExcelHTML() {
