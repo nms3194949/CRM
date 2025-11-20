@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>MECANGO｜正式報價單（v6.4 經典深藍版）</title>
+<title>MECANGO｜正式報價單（v6.7 匯款資訊版）</title>
 <style>
-/* --- 全局變數 (還原 V5.7 經典深藍金配色) --- */
+/* --- 全局變數 (V6.4 經典深藍金配色) --- */
 :root{
   --deep: #0A1221;       /* 網頁背景 */
   --card: #0C152A;       /*區塊背景 */
@@ -72,6 +72,10 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
 .flex input[type="checkbox"]:checked::after{content:'✔';color:#000;font-size:14px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}
 .flex small{color:var(--muted)}
 
+/* 手動金額輸入框 */
+.manual-price{display:none;width:110px;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--input-bg);color:var(--gold);text-align:right;font-family:Consolas,monospace;}
+.manual-price::placeholder{color:var(--muted);font-size:12px;font-family:sans-serif;}
+
 .rm{color:var(--danger);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,77,79,0.3);border-radius:8px;background:rgba(255,77,79,0.1);font-size:13px}
 .rm:hover{background:var(--danger);color:#fff}
 .add-btn{width:100%;padding:10px;border:1px dashed var(--line);background:rgba(12, 21, 42, 0.5);color:var(--muted);cursor:pointer;border-radius:12px;margin-top:8px;transition:0.2s}
@@ -107,13 +111,18 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
   .main-table .col-num { text-align: right; }
   .main-table .col-center { text-align: center; }
   
-  /* Footer */
+  /* Footer Totals */
   .footer-table { width: 100%; border-collapse: collapse; margin-top: 0; }
   .footer-table td { padding: 8px 6px; text-align: right; font-size: 13px; border-right: 1px solid #ccc; }
   .ft-row td { border-bottom: 1px solid #ccc; }
   .ft-total td { border-bottom: 2px solid #000; font-weight: 900; font-size: 15px; background-color: #fcfcfc; }
   .label-col { width: 80%; font-weight: bold; }
   .val-col { width: 20%; }
+
+  /* 匯款資訊區塊 (Excel Friendly) */
+  .bank-box { width:100%; margin-top: 20px; border: 1px solid #000; page-break-inside: avoid; }
+  .bank-box td { padding: 10px; font-size: 12px; line-height: 1.6; vertical-align: top; }
+  .bank-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
 }
 </style>
 </head>
@@ -253,6 +262,18 @@ html,body{margin:0;background:var(--deep);color:var(--ink);font-family:"Noto San
       <td class="val-col" id="p_total">0</td>
     </tr>
   </table>
+
+  <table class="bank-box">
+    <tr>
+      <td>
+        <div class="bank-title">【匯款資訊】屹登股份有限公司</div>
+        匯款帳號：042-018-1003-8503<br>
+        分行：807 永豐銀行 北高雄分行<br>
+        <div style="color:red; margin-top:6px; font-weight:bold">為避免影響您的權益，請務必將匯款證明傳真至本公司 07-345-4249 並註明公司名稱。</div>
+        <div style="margin-top:4px">支票郵寄地址：807 高雄市左營區孟子路37號3樓 客服部 收</div>
+      </td>
+    </tr>
+  </table>
 </div>
 
 <script>
@@ -273,7 +294,7 @@ const DATA = {
   cloud: [
     {t:"CRM(單店)－微店版",m:3000}, {t:"CRM(單店)－專業版",m:4000}, {t:"CRM(單店)－裂變版",m:5000},
     {t:"CRM+POS－小資版",m:3600}, {t:"CRM+POS－攤商版",m:4600}, {t:"CRM+POS－門店版",m:5600}, {t:"影音開課(500G)",m:5500},
-    {t:"總店系統",y:60000}, {t:"子店系統",y:36000}, {t:"電商平台",y:18000}
+    {t:"總店系統",y:60000}, {t:"子店系統", manual:true}, {t:"電商平台",y:18000}
   ],
   addon: [
     {t:"訂位/預約系統",y:15000}, {t:"多元支付",y:5000}, {t:"多店核銷",m:1000},
@@ -281,7 +302,7 @@ const DATA = {
   ],
   device: [
     {t:"Wifi+USB出單機(80mm)",o:5500}, {t:"Wifi+USB出單+發票機(58mm)",o:8500}, {t:"標籤貼紙機",o:6500}, {t:"二維條碼器",o:1800}, {t:"電子錢櫃",o:1980},
-    {t:"出單紙(80*80)",o:1800}, {t:"發票紙",o:1980} {t:"標籤紙(100卷)",o:2700}
+    {t:"出單紙(80*80)",o:1800}, {t:"發票紙",o:1980}, {t:"標籤紙(100卷)",o:2700}
   ]
 };
 
@@ -298,7 +319,8 @@ function init(){
 function getOpts(key){
   return DATA[key].map(x=>{
     let val="", label=x.t;
-    if(x.o) { val=`o|${x.o}`; label+=` ($${fmt(x.o)}/次)`; }
+    if(x.manual) { val=`man|0`; label+=` (手動輸入)`; }
+    else if(x.o) { val=`o|${x.o}`; label+=` ($${fmt(x.o)}/次)`; }
     else if(x.m) { val=`m|${x.m}`; label+=` ($${fmt(x.m)}/月)`; }
     else { val=`y|${x.y}`; label+=` ($${fmt(x.y)}/年)`; }
     return `<option value="${val}|${x.t}">${label}</option>`;
@@ -311,6 +333,7 @@ function addRow(containerId, type){
   div.style.marginBottom = '8px';
   div.innerHTML = `
     <select class="${type}-sel" style="flex:1" onchange="render()">${getOpts(type)}</select>
+    <input class="manual-price" placeholder="輸入年費" oninput="render()">
     <select class="qty" style="width:60px;text-align:center" onchange="render()">
       ${[...Array(20).keys()].map(i=>`<option ${i===0?'selected':''}>${i+1}</option>`).join('')}
     </select>
@@ -324,11 +347,11 @@ function addAddonRow(){ addRow('addon_list','addon'); }
 function addDeviceRow(){ addRow('device_list','device'); }
 
 function render(){
-  // 1. 同步資訊 (已包含統編 Bug 修復)
+  // 1. 同步資訊
   $("#p_date").textContent = $("#in_date").value;
   $("#p_corp").textContent = $("#in_corp").value;
   $("#p_contact").textContent = $("#in_contact").value;
-  $("#p_tax_id").textContent = $("#in_tax").value; // ID 修正
+  $("#p_tax_id").textContent = $("#in_tax").value; 
   $("#p_tel").textContent = $("#in_tel").value;
   $("#p_email").textContent = $("#in_email").value;
   $("#p_addr").textContent = $("#in_addr").value;
@@ -368,11 +391,24 @@ function render(){
     document.querySelectorAll(selClass).forEach(el => {
       const [mode, price, name] = el.value.split('|');
       const qty = num(el.parentElement.querySelector('.qty').value);
-      const p = num(price);
+      
+      // Manual Input Logic
+      const row = el.parentElement;
+      const input = row.querySelector('.manual-price');
+      let p = num(price);
+      
+      if(mode === 'man'){
+         input.style.display = 'block';
+         p = num(input.value); // override price with input
+      } else {
+         input.style.display = 'none';
+      }
+
       let o=0, m=0, y=0, t=0;
       if(mode==='o'){ o=p; t=p*qty; }
       else if(mode==='m'){ m=p; y=p*12; t=y*qty; }
-      else if(mode==='y'){ y=p; m=Math.round(p/12); t=y*qty; }
+      else if(mode==='y' || mode==='man'){ y=p; m=Math.round(p/12); t=y*qty; } // Treat manual as Yearly
+      
       push(name, o, m, y, qty, t);
     });
   };
@@ -390,9 +426,8 @@ function render(){
   $("#ui_tax").textContent = fmt(tax);
   $("#ui_total").textContent = fmt(total);
   
-  // Print Footer (已包含稅額 Bug 修復)
   $("#p_sub").textContent = fmt(subtotal);
-  $("#p_calc_tax").textContent = fmt(tax); // ID 修正
+  $("#p_calc_tax").textContent = fmt(tax); 
   $("#p_total").textContent = fmt(total);
 }
 
